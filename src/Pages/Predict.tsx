@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text } from 'native-base'
 
-export default function InputCalculator() {
+export function Predict() {
   return (
     <Text> InputCalculatorInputCalculatorInputCalculatorInputCalculatorInputCalculatorInputCalculatorInputCalculatorInputCalculator InputCalculatorInputCalculatorInputCalculator</Text>
   )

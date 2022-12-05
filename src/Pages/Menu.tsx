@@ -3,16 +3,90 @@ import {
   DrawerItemList,
   DrawerItem,
 } from "@react-navigation/drawer";
-import { Linking } from "react-native";
-
+import { Box, Flex, Text, View,  } from "native-base";
+import { StatusBar } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useIsFocused } from '@react-navigation/native';
 export function Menu(props: any) {
+
   return (
-    <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
+    <DrawerContentScrollView {...props} style={{backgroundColor : "black", display: "flex"}} >
+      <Flex
+        height={"150"}
+        alignItems="center"
+        justifyContent={"center"}
+        bg="black"
+        
+      >
+        <Text color="white" fontWeight={"600"} fontSize={"xl"}>
+          Welcome
+        </Text>
+      </Flex>
+      <Box bg="white">
+      <Box
+        m="5"
+        mb="0"
+        borderBottomColor={"black"}
+        borderBottomWidth="1"
+        borderBottomStyle={"solid"}
+        // style={{
+        //   borderColor : "red",
+        //   borderStyle : "solid",
+        //   borderWidth : 1
+        // }}
+      >
+       
+        <DrawerItem
+          label={"Home"}
+          onPress={() => props.navigation.navigate("Home")}
+        />
+        <DrawerItem
+          label={"SPO"}
+          onPress={() => props.navigation.navigate("SPO")}
+        />
+        <DrawerItem
+          label={"Input calculator"}
+          onPress={() => props.navigation.navigate("InputCalculator")}
+        />
+        <DrawerItem
+          label={"Predict"}
+          onPress={() => props.navigation.navigate("Predict")}
+        />
+      </Box>
+      <Box
+        m="5"
+        mb="0"
+        borderBottomColor={"black"}
+        borderBottomWidth="1"
+        borderBottomStyle={"solid"}
+      >
+         <Text color={"grey"}>About</Text>
+        <DrawerItem
+          label={"ICAR - NIAP"}
+          onPress={() => props.navigation.navigate("ICARNIANP")}
+        />
+        <DrawerItem
+          label={"ICAR - NFP"}
+          onPress={() => props.navigation.navigate("ICARNFP")}
+        />
+        <DrawerItem
+          label={"PREFER app"}
+          onPress={() => props.navigation.navigate("PREFERApp")}
+        />
+        <DrawerItem
+          label={"Team"}
+          onPress={() => props.navigation.navigate("Team")}
+        />
+
+      </Box>
+      <Box m="5"  mb="0">
+      <Text color={"grey"}>Others</Text>
       <DrawerItem
-        label="Help"
-        onPress={() => Linking.openURL("https://mywebsite.com/help")}
-      />
+          label={"Contact"}
+          onPress={() => props.navigation.navigate("Contact")}
+        />
+      </Box>
+      </Box>
     </DrawerContentScrollView>
   );
 }
