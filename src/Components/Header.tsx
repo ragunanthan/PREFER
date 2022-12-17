@@ -37,7 +37,7 @@ export function Header({ navigation }: any) {
           width={"100%"}
           alignItems="center"
         >
-          <IconButton onPress={() => navigation.toggleDrawer()}>
+          <IconButton p={3}  onPress={() => navigation.toggleDrawer()}>
             <Image source={images.menu} alt="Sample 5" />
           </IconButton>
           <Text ml="4" color="black" fontWeight="600" fontSize="lg">
@@ -63,10 +63,10 @@ export function CommonHeader(props: any) {
         justifyContent="space-between"
       >
         <Flex flexDir={"row"} alignItems="center">
-          <IconButton size={"md"} onPress={() => navigation.toggleDrawer()}>
+          <IconButton size={"lg"} p={3} onPress={() => navigation.toggleDrawer()}>
             <Image source={images.menu} alt="Sample 5" />
           </IconButton>
-          <Text>{route?.params?.title ?? "Home"}</Text>
+          <Text fontSize={"xl"} fontWeight={"bold"}>{route?.params?.title ?? "Home"}</Text>
         </Flex>
         <Box
           width={"90px"}

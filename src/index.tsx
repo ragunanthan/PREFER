@@ -15,6 +15,13 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 const Drawer = createDrawerNavigator();
 
 const theme = extendTheme({
+  components: { 
+    Text : {
+      baseStyle : {
+        fontFamily : 'Poppins-Regular'
+      }
+    }
+  },
   fontConfig: {
     Roboto: {
       100: {
@@ -51,6 +58,7 @@ const theme = extendTheme({
     fonts: {
       heading: "Poppins-Bold",
       body: "Poppins-Regular",
+    
       mono: "Poppins",
     },
   },

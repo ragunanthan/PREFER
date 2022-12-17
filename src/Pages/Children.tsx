@@ -166,7 +166,7 @@ export function Contact() {
     <VStack alignItems="center">
       <Box maxW={"96"}>
         {ContactText.map((i) => (
-          <Address title={i.title}>
+          <Address  key={i.title} title={i.title}>
             {i.content.map((text) => (
               <Text key={text}>{text}</Text>
             ))}

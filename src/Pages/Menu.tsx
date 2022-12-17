@@ -10,19 +10,19 @@ import { useIsFocused } from '@react-navigation/native';
 export function Menu(props: any) {
 
   return (
-    <DrawerContentScrollView {...props} style={{backgroundColor : "black", display: "flex"}} >
+    <DrawerContentScrollView {...props} flex={1} >
       <Flex
         height={"150"}
         alignItems="center"
         justifyContent={"center"}
         bg="black"
-        
+        flex={1}
       >
         <Text color="white" fontWeight={"600"} fontSize={"xl"}>
           Welcome
         </Text>
       </Flex>
-      <Box bg="white">
+      <Box bg="white"  flex={2}>
       <Box
         m="5"
         mb="0"
