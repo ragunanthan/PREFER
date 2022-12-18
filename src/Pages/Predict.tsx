@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -13,6 +13,7 @@ import {
 } from "native-base";
 import { Formik, useField } from "formik";
 import * as yup from "yup";
+import { ENDPOINTS, GetMethod, PostMethod } from "../API/Fetcher";
 
 export function Predict() {
   const [calculatedValue, setCalculatedValue] = useState<number | null>(null);
@@ -26,8 +27,22 @@ export function Predict() {
           h1: null,
           h4: null,
         }}
-        onSubmit={(values:any) => {
-          setCalculatedValue((values.h0-values.h1)+(values.h0-values.h4))
+        onSubmit={(values: any) => {
+          setCalculatedValue((values.h0 - values.h1) + (values.h0 - values.h4));
+          PostMethod(ENDPOINTS.PREFER, {
+            bullID: values.bullID,
+          ejakulationNo:  values.ejakulationNo,
+          h0: parseInt(values.h0),
+          h1: parseInt(values.h1),
+          h4: parseInt(values.h4),
+            calculation : (values.h0 - values.h1) + (values.h0 - values.h4)
+          })
+            .then((r) => {
+              console.log(r.data);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
         }}
         validationSchema={yup.object().shape({
           bullID: yup.string().required("Required"),
@@ -53,14 +68,58 @@ export function Predict() {
             >
               Process
             </Button>
-            <Text mt={3} fontSize={"lg"} fontWeight={"bold"}>{calculatedValue ? calculatedValue : ""}</Text>
+            <Text mt={3} fontSize={"lg"} fontWeight={"bold"}>
+              {calculatedValue ? calculatedValue : ""}
+            </Text>
           </Flex>
         )}
       </Formik>
+      <ShowData />
     </ScrollView>
   );
 }
 
+function ShowData() {
+  const [state, setState] = useState([]);
+  useEffect(() => {
+    GetMethod(ENDPOINTS.PREFER)
+      .then((r) => {
+        console.log(r.data);
+        
+        setState(r.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+  return (
+    <Flex>
+      {state.map((i: any, index) => (
+        <HStack key={index}>
+          <Text>{index + 1} .</Text>
+          <Box pl={3}>
+            <List title={"Created at"} value={i.createdAt.slice(0, 10)} />
+            <List title={"Bull ID"} value={i.bullID} />
+            <List title={"h0"} value={i.h0} />
+            <List title={"h1"} value={i.h1} />
+            <List title={"h4"} value={i.h4} />
+            <List title={"calculation"} value={i.calculation} />
+            <List title={"isAccept"} value={i.isAccept} />
+          </Box>
+        </HStack>
+      ))}
+    </Flex>
+  );
+}
+
+function List({ title, value }: any) {
+  return (
+    <HStack space={"3"}>
+      <Text>{title} : </Text>
+      <Text>{value} </Text>
+    </HStack>
+  );
+}
 function Inputs({ title, name }: { name: string; title: string }) {
   const [field, meta, helper] = useField(name);
 
