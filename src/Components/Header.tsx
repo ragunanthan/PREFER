@@ -3,6 +3,7 @@ import {
   createIcon,
   Flex,
   HamburgerIcon,
+  Heading,
   HStack,
   Icon,
   IconButton,
@@ -31,9 +32,9 @@ export function Header({ navigation }: any) {
       >
         <HStack justifyContent="space-between" alignItems="center" p="3">
           <Image source={images.icar} alt="Sample 2" />
-          <Text color="black" fontSize="xl" fontWeight="bold">
+          <Heading color="black" fontSize="xl" fontWeight="bold">
             Welcome
-          </Text>
+          </Heading>
           <Image source={images.niamp} alt="Sample 1" />
         </HStack>
         <HStack
@@ -46,9 +47,9 @@ export function Header({ navigation }: any) {
         >
           <Menu navigation={navigation} />
           <Box ml="2">
-            <Text color="black" fontSize="xl" fontWeight="bold">
+            <Heading color="black" fontSize="xl" fontWeight="bold">
               PREFER
-            </Text>
+            </Heading>
             <Text color="black" fontWeight="600" fontSize="md">
               Predicting Semen Quality Simplified
             </Text>

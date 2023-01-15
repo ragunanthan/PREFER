@@ -13,7 +13,9 @@ import {
 } from "native-base";
 import { Formik, useField } from "formik";
 import * as yup from "yup";
-import { ENDPOINTS, GetMethod, PostMethod } from "../API/Fetcher";
+import { ENDPOINTS, fetcher, PostMethod } from "../API/Fetcher";
+import { logger } from "../utils/logger";
+import { Inputs } from "../Components/Form/InputForm";
 
 export function Predict() {
   const [calculatedValue, setCalculatedValue] = useState<number | null>(null);
@@ -38,10 +40,10 @@ export function Predict() {
             calculation : (values.h0 - values.h1) + (values.h0 - values.h4)
           })
             .then((r) => {
-              console.log(r.data);
+              logger.info(r.data);
             })
             .catch((e) => {
-              console.log(e);
+              logger.error(e);
             });
         }}
         validationSchema={yup.object().shape({
@@ -54,11 +56,11 @@ export function Predict() {
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <Flex p={5} alignItems="center">
-            <Inputs title="Enter bull Id" name={"bullID"} />
+            <Inputs title="Enter bull Id" name={"bullID"}  type={"text"} />
             <RadioGroup title={"Ejaculation no"} name={"ejakulationNo"} />
-            <Inputs title="Progressive motility 0h" name={"h0"} />
-            <Inputs title="Progressive motility 1h" name={"h1"} />
-            <Inputs title="Progressive motility 4h" name={"h4"} />
+            <Inputs title="Progressive motility 0h" name={"h0"}  type={"text"} />
+            <Inputs title="Progressive motility 1h" name={"h1"}  type={"text"} />
+            <Inputs title="Progressive motility 4h" name={"h4"}  type={"text"} />
             <Button
               onPress={handleSubmit}
               w={"32"}
@@ -82,14 +84,14 @@ export function Predict() {
 function ShowData() {
   const [state, setState] = useState([]);
   useEffect(() => {
-    GetMethod(ENDPOINTS.PREFER)
+    fetcher.get(ENDPOINTS.PREFER)
       .then((r) => {
-        console.log(r.data);
+        logger.info(r.data);
         
         setState(r.data);
       })
       .catch((e) => {
-        console.log(e);
+        logger.error(e);
       });
   }, []);
   return (
@@ -120,29 +122,7 @@ function List({ title, value }: any) {
     </HStack>
   );
 }
-function Inputs({ title, name }: { name: string; title: string }) {
-  const [field, meta, helper] = useField(name);
 
-  return (
-    <FormControl isInvalid={meta.touched && meta.error ? true : false}>
-      <Flex flexDirection={"row"} mt={4} alignItems="center">
-        <FormControl.Label flex={3}>{title}</FormControl.Label>
-        <Text flex={0.2}>:</Text>
-        <Input
-          flex={4}
-          variant={"underlined"}
-          onPressIn={() => helper.setTouched(true)}
-          value={field.value}
-          onChangeText={(t) => helper.setValue(t)}
-          isInvalid={meta.touched && meta.error ? true : false}
-        />
-      </Flex>
-      <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-        {meta.error}
-      </FormControl.ErrorMessage>
-    </FormControl>
-  );
-}
 
 function RadioGroup({ title, name }: { title: string; name: string }) {
   return (
