@@ -1,16 +1,23 @@
 import {
   Box,
-  Button,
+  createIcon,
   Flex,
+  HamburgerIcon,
   HStack,
   Icon,
   IconButton,
   Image,
-  StatusBar,
   Text,
 } from "native-base";
 import React from "react";
+import Svg, { G, Path } from "react-native-svg";
 import { images } from "../Assests";
+
+const Menu = ({ navigation }: { navigation: any }) => (
+  <IconButton size={"lg"} p={3} onPress={() => navigation.toggleDrawer()}>
+    <HamburgerIcon size={"lg"} />
+  </IconButton>
+);
 export function Header({ navigation }: any) {
   return (
     <>
@@ -24,8 +31,8 @@ export function Header({ navigation }: any) {
       >
         <HStack justifyContent="space-between" alignItems="center" p="3">
           <Image source={images.icar} alt="Sample 2" />
-          <Text color="black" fontSize="xl" fontWeight="600">
-            PREFER
+          <Text color="black" fontSize="xl" fontWeight="bold">
+            Welcome
           </Text>
           <Image source={images.niamp} alt="Sample 1" />
         </HStack>
@@ -33,16 +40,19 @@ export function Header({ navigation }: any) {
           //   borderColor="red"
           //   borderWidth={"1"}
           //   borderStyle="solid"
-          padding="4"
+          padding="2"
           width={"100%"}
           alignItems="center"
         >
-          <IconButton p={3}  onPress={() => navigation.toggleDrawer()}>
-            <Image source={images.menu} alt="Sample 5" />
-          </IconButton>
-          <Text ml="4" color="black" fontWeight="600" fontSize="lg">
-            Predicting semen quality simplified
-          </Text>
+          <Menu navigation={navigation} />
+          <Box ml="2">
+            <Text color="black" fontSize="xl" fontWeight="bold">
+              PREFER
+            </Text>
+            <Text color="black" fontWeight="600" fontSize="md">
+              Predicting Semen Quality Simplified
+            </Text>
+          </Box>
         </HStack>
       </Box>
     </>
@@ -56,25 +66,24 @@ export function CommonHeader(props: any) {
     <>
       <Box safeAreaTop color={"red"} />
       <HStack
-        height={180}
+        height={100}
         width={"100%"}
         bg="white"
         alignItems="center"
         justifyContent="space-between"
+        shadow={3}
+        mb="8"
       >
-        <Flex flexDir={"row"} alignItems="center">
-          <IconButton size={"lg"} p={3} onPress={() => navigation.toggleDrawer()}>
-            <Image source={images.menu} alt="Sample 5" />
-          </IconButton>
-          <Text fontSize={"xl"} fontWeight={"bold"}>{route?.params?.title ?? "Home"}</Text>
+        <Flex  flexDir={"row"} alignItems="center"  >
+          <Menu navigation={navigation} />
+          <Text fontSize={"xl"} fontWeight={"bold"}>
+            {route?.params?.title ?? "Home"}
+          </Text>
         </Flex>
-        <Box
-          width={"90px"}
-          height="130px"
-        >
+        <Box width={"60px"} height="80px">
           <Image source={images.cow} width="100%" height={"100%"} alt="cow" />
         </Box>
-      </HStack>
+      </HStack >
     </>
   );
 }

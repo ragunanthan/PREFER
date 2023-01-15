@@ -85,7 +85,7 @@ function App() {
               screenOptions={({ navigation, route }) => ({
                 header: CommonHeader,
                 sceneContainerStyle: {
-                  backgroundColor: "white",
+                  backgroundColor: "#eeeeee",
                 },
               })}
             >
