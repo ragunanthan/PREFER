@@ -20,11 +20,13 @@ import { Predict } from "./Pages/Predict";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Login, { Signup } from "./Pages/Login";
 import AppContextProvier from "./provider/AppContext";
+import Dashboard from "./Pages/Dashboard";
 
 const Drawer = createDrawerNavigator();
 
 const theme = extendTheme({
   components: {
+
     Text: {
       baseStyle: {
         fontFamily: "Poppins-Regular",
@@ -103,6 +105,11 @@ function App() {
                   name="Login"
                   initialParams={{ title: "Login" }}
                   component={Login}
+                />
+                <Drawer.Screen
+                  name="Dashboard"
+                  initialParams={{ title: "Dashboard" }}
+                  component={Dashboard}
                 />
                 <Drawer.Screen
                   name="Signup"

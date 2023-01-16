@@ -20,36 +20,37 @@ export function Inputs({
   type?: "text" | "password";
 }) {
   const [field, meta, helper] = useField(name);
-  if (form)
+  // if (form)
+  //   return (
+  //     <FormControl isInvalid={meta.touched && meta.error ? true : false}>
+  //       <Flex flexDirection={"row"} mt={4} alignItems="center">
+  //         <FormControl.Label flex={3}>{title}</FormControl.Label>
+  //         <Text flex={0.2}>:</Text>
+  //         <Input
+  //           flex={4}
+  //           variant={"underlined"}
+  //           onPressIn={() => helper.setTouched(true)}
+  //           value={field.value}
+  //           onChangeText={(t) => helper.setValue(t)}
+  //           isInvalid={meta.touched && meta.error ? true : false}
+  //         />
+  //       </Flex>
+  //       <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+  //         {meta.error}
+  //       </FormControl.ErrorMessage>
+  //     </FormControl>
+  //   );
+  // else
     return (
       <FormControl isInvalid={meta.touched && meta.error ? true : false}>
-        <Flex flexDirection={"row"} mt={4} alignItems="center">
-          <FormControl.Label flex={3}>{title}</FormControl.Label>
-          <Text flex={0.2}>:</Text>
-          <Input
-            flex={4}
-            variant={"underlined"}
-            onPressIn={() => helper.setTouched(true)}
-            value={field.value}
-            onChangeText={(t) => helper.setValue(t)}
-            isInvalid={meta.touched && meta.error ? true : false}
-          />
-        </Flex>
-        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-          {meta.error}
-        </FormControl.ErrorMessage>
-      </FormControl>
-    );
-  else
-    return (
-      <FormControl isInvalid={meta.touched && meta.error ? true : false}>
-        <FormControl.Label >{title}</FormControl.Label>
+        <FormControl.Label colorScheme={"black"} >{title} {form ? `:` : null}</FormControl.Label>
         <Input
           type={type}
           onPressIn={() => helper.setTouched(true)}
           value={field.value}
           onChangeText={(t) => helper.setValue(t)}
           isInvalid={meta.touched && meta.error ? true : false}
+          size={"xl"}
         />
         <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
           {meta.error}

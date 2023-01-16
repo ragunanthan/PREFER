@@ -16,6 +16,7 @@ import { login, signup } from "../API/auth";
 import { logger } from "../utils/logger";
 import { setSecureData } from "../keychain/secureStorage";
 import { useAppContext } from "../provider/AppContext";
+import { fetcher } from "../API/Fetcher";
 
 export default function Login(props: any) {
   let { values } = props.route.params;
@@ -38,6 +39,7 @@ export default function Login(props: any) {
                 email: values.email,
                 userId: e.data.userId,
               };
+              fetcher.defaults.headers["authorization"] =  `Bearer ${e.data.accessToken}`;
               setSecureData("userData", data);
               setUserState(data);
               props.navigation.navigate("Home");

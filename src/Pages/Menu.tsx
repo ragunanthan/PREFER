@@ -39,6 +39,10 @@ export function Menu(props: any) {
             label={"Predict"}
             onPress={() => props.navigation.navigate("Predict")}
           />
+          <DrawerItem
+            label={"View Data"}
+            onPress={() => props.navigation.navigate("Dashboard")}
+          />
         </Box>
         <Box
           m="5"
