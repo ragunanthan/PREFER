@@ -1,5 +1,5 @@
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { Box, Button, Flex, Text } from "native-base";
+import { Avatar, Box, Button, Flex, HStack, Text, VStack } from "native-base";
 import { ENDPOINTS, fetcher } from "../API/Fetcher";
 import { removeAllSecureData } from "../keychain/secureStorage";
 import { useAppContext } from "../provider/AppContext";
@@ -83,35 +83,43 @@ export function Menu(props: any) {
 
 function UserInfo({ props }: any) {
   const { userState, setUserState } = useAppContext();
-  const logout = async() => {
-    try { 
-      const data = await fetcher.post(ENDPOINTS.LOGOUT, JSON.stringify({
-        refreshToken :  userState?.refreshToken,
-        userId:  userState?.userId,
-      }));
+  const logout = async () => {
+    try {
+      const data = await fetcher.post(
+        ENDPOINTS.LOGOUT,
+        JSON.stringify({
+          refreshToken: userState?.refreshToken,
+          userId: userState?.userId,
+        })
+      );
       console.log(data.data);
-      if(data.data){
+      if (data.data) {
         await removeAllSecureData();
-      setUserState(null);
+        setUserState(null);
       }
-    }
-    catch(Err:any){
+    } catch (Err: any) {
       logger.error(Err);
     }
   };
   if (userState?.userId)
     return (
-      <Flex flexDir={"column"} p={3}>
+      <VStack space={"2"} flexDir={"column"} alignItems="center" p={3}>
+        {/* <HStack justifyContent={"space-between"}> */}
+          <Avatar bg="green.500" size={"sm"}>
+            AJ
+          </Avatar>
+        {/* </HStack> */}
         <Text
           color="white"
           onPress={() => props.navigation.navigate("Login")}
-          fontWeight={"600"}
-          fontSize={"xl"}
+          fontSize={"sm"}
         >
           {userState.email}
         </Text>
-        <Button onPress={logout}>Logout</Button>
-      </Flex>
+          <Button width="30%" p={2} onPress={logout}>
+            Logout
+          </Button>
+      </VStack>
     );
   return (
     <Flex alignItems="center" justifyContent={"center"} flex={1}>

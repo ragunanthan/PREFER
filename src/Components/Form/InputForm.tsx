@@ -13,11 +13,13 @@ export function Inputs({
   name,
   form = true,
   type = "text",
+  keyboardType = "default"
 }: {
   name: string;
   title: string;
   form?: boolean;
   type?: "text" | "password";
+  keyboardType?: "numeric" | "default"
 }) {
   const [field, meta, helper] = useField(name);
   // if (form)
@@ -50,6 +52,7 @@ export function Inputs({
           value={field.value}
           onChangeText={(t) => helper.setValue(t)}
           isInvalid={meta.touched && meta.error ? true : false}
+          keyboardType={keyboardType}
           size={"xl"}
         />
         <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>

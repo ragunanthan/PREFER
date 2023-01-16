@@ -12,18 +12,20 @@ import {
   Cell,
 } from "../Components/Table";
 import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
-export default function Dashboard() {
+export default function Dashboard(props:any) {
   return (
     <ScrollView>
       
-      <ShowData />
+      <ShowData {...props} />
     </ScrollView>
   );
 }
-function ShowData() {
+function ShowData(props:any) {
   const [state, setState] = useState([]);
+  
   useEffect(() => {
-    fetcher
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      fetcher
       .get(ENDPOINTS.PREFER)
       .then((r) => {
         logger.info(r.data);
@@ -33,7 +35,11 @@ function ShowData() {
       .catch((e) => {
         logger.error(e);
       });
-  }, []);
+    });
+
+    return unsubscribe;
+    
+  }, [props.navigation.isFocused]);
 
   let flexArr = [1, 1, 2, 2, 2, 2];
   return (
@@ -83,9 +89,9 @@ function List({ title, value }: any) {
 }
 
 const styles = StyleSheet.create({
-  head: { height: 40, backgroundColor: "#f1f8ff" },
+  head: { height: 40, backgroundColor: "#f1f8ff", color : "black" },
   wrapper: { flexDirection: "row" },
-  title: { flex: 1, backgroundColor: "#f6f8fa" },
+  title: { flex: 1, backgroundColor: "#f6f8fa", color : "black"},
   row: { height: 28 },
-  text: { textAlign: "center" },
+  text: { textAlign: "center", color : "black"  },
 });

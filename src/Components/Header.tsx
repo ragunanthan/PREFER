@@ -33,7 +33,7 @@ export function Header({ navigation }: any) {
         <HStack justifyContent="space-between" alignItems="center" p="3">
           <Image source={images.icar} alt="Sample 2" />
           <Heading color="black" fontSize="xl" fontWeight="bold">
-            Welcome
+            ICAR - NIANP
           </Heading>
           <Image source={images.niamp} alt="Sample 1" />
         </HStack>
@@ -74,6 +74,7 @@ export function CommonHeader(props: any) {
         justifyContent="space-between"
         shadow={3}
         mb="8"
+        borderBottomRadius="10"
       >
         <Flex  flexDir={"row"} alignItems="center"  >
           <Menu navigation={navigation} />

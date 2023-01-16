@@ -52,6 +52,7 @@ export default function AppContextProvier({
           accessToken: accessToken.data.accessToken,
         });
         fetcher.defaults.headers["authorization"] =  `Bearer ${accessToken.data.accessToken}`;
+        fetcher.defaults.headers["userId"] =   data?.userId;
       }
     } catch (err: any) {
       logger.error(err);
