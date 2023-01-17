@@ -1,44 +1,79 @@
-import { Box, Flex, HStack, ScrollView, Text } from "native-base";
-import React, { Component, useEffect, useState } from "react";
+import {
+  Box,
+  HStack,
+  Icon,
+  Image,
+  InfoIcon,
+  Input,
+  ScrollView,
+  Text,
+} from "native-base";
+import React, { useEffect, useState } from "react";
 import { ENDPOINTS, fetcher } from "../API/Fetcher";
 import { logger } from "../utils/logger";
-import {
-  Table,
-  TableWrapper,
-  Row,
-  Rows,
-  Col,
-  Cols,
-  Cell,
-} from "../Components/Table";
-import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
-export default function Dashboard(props:any) {
+import { Table, TableWrapper, Row, Rows } from "../Components/Table";
+import { StyleSheet } from "react-native";
+import { RadioGroup } from "../Components/Form/RadioGroup";
+import { Button, Actionsheet, useDisclose } from "native-base";
+import { images } from "../Assests";
+import { style } from "../Components/Container";
+export default function Dashboard(props: any) {
+  const { isOpen, onOpen, onClose } = useDisclose();
   return (
-    <ScrollView>
+    <ScrollView  contentContainerStyle={{ backgroundColor : "white"}}>
+
+        <Button
+         
+          width={"56"}
+          onPress={onOpen}
+        >
+          <HStack><Image
+            source={images.filter}
+            alt="sma"
+            width={"20px"}
+            height={"100%"}
+          />
+          <Text> Filter</Text></HStack>
+        </Button>
+
+        <Actionsheet isOpen={isOpen} onClose={onClose}>
+          <Actionsheet.Content minHeight={"xl"}>
+            <Input />
+            <RadioGroup
+              value="by date"
+              onChange={(e) => {}}
+              option={[
+                { value: "by date", label: "by date" },
+                { value: "by month", label: "by month" },
+              ]}
+              title="Filter by"
+            />
+          </Actionsheet.Content>
+        </Actionsheet>
       
       <ShowData {...props} />
+     
     </ScrollView>
   );
 }
-function ShowData(props:any) {
+function ShowData(props: any) {
   const [state, setState] = useState([]);
-  
-  useEffect(() => {
-    const unsubscribe = props.navigation.addListener('focus', () => {
-      fetcher
-      .get(ENDPOINTS.PREFER)
-      .then((r) => {
-        logger.info(r.data);
 
-        setState(r.data);
-      })
-      .catch((e) => {
-        logger.error(e);
-      });
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      fetcher
+        .get(ENDPOINTS.PREFER)
+        .then((r) => {
+          logger.info(r.data);
+
+          setState(r.data);
+        })
+        .catch((e) => {
+          logger.error(e);
+        });
     });
 
     return unsubscribe;
-    
   }, [props.navigation.isFocused]);
 
   let flexArr = [1, 1, 2, 2, 2, 2];
@@ -89,9 +124,9 @@ function List({ title, value }: any) {
 }
 
 const styles = StyleSheet.create({
-  head: { height: 40, backgroundColor: "#f1f8ff", color : "black" },
+  head: { height: 40, backgroundColor: "#f1f8ff", color: "black" },
   wrapper: { flexDirection: "row" },
-  title: { flex: 1, backgroundColor: "#f6f8fa", color : "black"},
+  title: { flex: 1, backgroundColor: "#f6f8fa", color: "black" },
   row: { height: 28 },
-  text: { textAlign: "center", color : "black"  },
+  text: { textAlign: "center", color: "black" },
 });

@@ -73,7 +73,7 @@ export function CommonHeader(props: any) {
         alignItems="center"
         justifyContent="space-between"
         shadow={3}
-        mb="8"
+        mb="6"
         borderBottomRadius="10"
       >
         <Flex  flexDir={"row"} alignItems="center"  >

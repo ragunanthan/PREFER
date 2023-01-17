@@ -15,7 +15,7 @@ import React from "react";
 
 let borderColor = "coolGray.200";
 export let style = {
-  maxW : "90%",
+  width : "90%",
   rounded : "2xl",
   overflow : "hidden",
   borderColor : borderColor,

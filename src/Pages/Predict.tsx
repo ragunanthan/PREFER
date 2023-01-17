@@ -1,27 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
-  Alert,
   Box,
   Button,
-  CloseIcon,
-  Flex,
-  FormControl,
-  HStack,
-  IconButton,
-  Input,
-  Radio,
   ScrollView,
   Text,
   useToast,
   VStack,
-  WarningOutlineIcon,
 } from "native-base";
-import { Formik, useField } from "formik";
+import { Formik } from "formik";
 import * as yup from "yup";
-import { ENDPOINTS, fetcher, PostMethod } from "../API/Fetcher";
+import { ENDPOINTS, PostMethod } from "../API/Fetcher";
 import { logger } from "../utils/logger";
 import { Inputs } from "../Components/Form/InputForm";
-import { RadioGroup } from "../Components/Form/RadioGroup";
+import { RadioGroupFormik } from "../Components/Form/RadioGroup";
 import { useAppContext } from "../provider/AppContext";
 import { style } from "../Components/Container";
 import { ToastAlert } from "../Components/Toast";
@@ -89,7 +80,7 @@ export function Predict() {
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <VStack   {...style} width={"95%"} space={3} p={3} px={5} alignItems="center">
             <Inputs title="Enter bull Id" name={"bullID"} type={"text"} />
-            <RadioGroup
+            <RadioGroupFormik
               title={"Ejaculation no : "}
               name={"ejakulationNo"}
               option={[

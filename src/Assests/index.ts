@@ -1,5 +1,5 @@
 export const images = {
-    menu : require("./MenuIcon.png"),
+    filter : require("./filter.png"),
     niamp : require("./NIAMPlogo.png"),
     icar  : require("./ICARlogo.png"),
     homeImage : require("./homeImage.jpeg"),

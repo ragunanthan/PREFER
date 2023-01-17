@@ -24,7 +24,7 @@ fetcher.interceptors.response.use((response) => {
         refreshToken: data?.refreshToken,
       });            
       axios.defaults.headers.common['Authorization'] = `Bearer ${access_token.data.accessToken}`;
-      return axiosApiInstance(originalRequest);
+      return fetcher(originalRequest);
     }
     return Promise.reject(error);
   });
