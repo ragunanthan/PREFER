@@ -2,7 +2,7 @@ import axios from "axios";
 import { getSecureData } from "../keychain/secureStorage";
 
 export const fetcher = axios.create({
-    baseURL : "http://localhost:3000/api",
+    baseURL : "https://preferapi-production.up.railway.app/api",
     headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin' : "*"
