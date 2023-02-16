@@ -2,7 +2,7 @@ import axios from "axios";
 import { getSecureData } from "../keychain/secureStorage";
 
 export const fetcher = axios.create({
-    baseURL : "https://preferapi-production.up.railway.app/api",
+    baseURL :  "https://preferapi-production.up.railway.app/api",
     headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin' : "*"
@@ -11,10 +11,8 @@ export const fetcher = axios.create({
 
 // Response interceptor for API calls
 fetcher.interceptors.response.use((response) => {
-    console.log(response);
     return response
   }, async function (error) {
-    console.log(error);
     const originalRequest = error.config;
     if (error.response.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -36,6 +34,7 @@ export const ENDPOINTS = {
     SIGNUP : "/signup",
     REFERSH_TOKEN : "/refreshToken",
     LOGOUT : "/refreshToken/logut",
-    PREFER : "/prefer"
+    PREFER : "/prefer",
+    ALLUSER : "/user"
 }
 

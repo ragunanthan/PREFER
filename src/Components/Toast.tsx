@@ -3,7 +3,7 @@ import React from 'react';
 
 export const ToastAlert = ({
     id,
-    status,
+    status = "error",
     variant,
     title,
     description,

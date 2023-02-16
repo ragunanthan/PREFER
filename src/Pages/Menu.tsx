@@ -1,9 +1,11 @@
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { Avatar, Box, Button, Flex, HStack, Text, VStack } from "native-base";
+import { DrawerActions } from '@react-navigation/native';
+import { Avatar, Box, Button, Flex, Text, VStack } from "native-base";
 import { ENDPOINTS, fetcher } from "../API/Fetcher";
 import { removeAllSecureData } from "../keychain/secureStorage";
 import { useAppContext } from "../provider/AppContext";
 import { logger } from "../utils/logger";
+
 export function Menu(props: any) {
   return (
     <DrawerContentScrollView {...props} flex={1}>
@@ -82,7 +84,7 @@ export function Menu(props: any) {
 }
 
 function UserInfo({ props }: any) {
-  const { userState, setUserState } = useAppContext();
+  const { userState, setUserState, setShowLogin } = useAppContext();
   const logout = async () => {
     try {
       const data = await fetcher.post(
@@ -92,7 +94,6 @@ function UserInfo({ props }: any) {
           userId: userState?.userId,
         })
       );
-      console.log(data.data);
       if (data.data) {
         await removeAllSecureData();
         setUserState(null);
@@ -125,7 +126,10 @@ function UserInfo({ props }: any) {
     <Flex alignItems="center" justifyContent={"center"} flex={1}>
       <Text
         color="white"
-        onPress={() => props.navigation.navigate("Login")}
+        onPress={() =>{
+          props.navigation.dispatch(DrawerActions.closeDrawer());
+          setShowLogin(true);
+        }}
         fontWeight={"600"}
         fontSize={"xl"}
       >

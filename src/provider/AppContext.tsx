@@ -1,4 +1,4 @@
-import React, { Context, useContext, useMemo } from "react";
+import React, { useState, useContext, useMemo } from "react";
 import { ENDPOINTS, fetcher } from "../API/Fetcher";
 import { getSecureData, setSecureData } from "../keychain/secureStorage";
 import { logger } from "../utils/logger";
@@ -11,10 +11,14 @@ type AppContexttype = {
     userId: number;
   };
   setUserState: React.Dispatch<React.SetStateAction<null>>;
+  showLogin : boolean;
+  setShowLogin :  React.Dispatch<React.SetStateAction<boolean>>;
 };
 const AppContext = React.createContext<AppContexttype>({
   userState: null,
   setUserState: () => {},
+  showLogin: false,
+  setShowLogin: () => {},
 });
 
 export const useAppContext = () => useContext(AppContext);
@@ -24,10 +28,11 @@ export default function AppContextProvier({
 }: {
   children: React.ReactNode;
 }) {
-  const [userState, setUserState] = React.useState(null);
+  const [showLogin, setShowLogin] = useState(false);
+  const [userState, setUserState] = useState(null);
   const state = useMemo(
-    () => ({ userState, setUserState }),
-    [userState, setUserState]
+    () => ({ userState, setUserState, showLogin, setShowLogin }),
+    [ userState, setUserState, showLogin, setShowLogin ]
   );
 
   React.useEffect(() => {

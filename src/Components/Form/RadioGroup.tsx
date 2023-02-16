@@ -32,7 +32,7 @@ export function RadioGroup({
         >
           <HStack space={4}>
             {option.map((i) => (
-              <Radio key={i.value} value={i.value} my={1}>
+              <Radio key={i.value} value={i.value} my={1}  >
                 {i.label}
               </Radio>
             ))}

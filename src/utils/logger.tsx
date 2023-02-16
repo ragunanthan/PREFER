@@ -11,7 +11,7 @@ const info = (...args: any) => {
 
 const error = (message: string, error?: Error) => {
     console.log('# logger.error(): ');
-    console.log(message, error);
+    console.log(message);
 };
 
 export const logger = {
