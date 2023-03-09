@@ -1,6 +1,6 @@
 
 import { useField } from 'formik';
-import { Flex, FormControl, HStack, Radio } from 'native-base';
+import { Flex, FormControl, HStack, Radio, VStack } from 'native-base';
 import React from 'react';
 
 type RadioGroupType = {
@@ -21,8 +21,8 @@ export function RadioGroup({
    
   
     return (
-      <Flex flexDirection={"row"} alignItems="center">
-        <FormControl.Label flex={2}>{title}</FormControl.Label>
+      <Flex flexDirection={"row"} alignItems="flex-start">
+       {title && <FormControl.Label flex={2}>{title}</FormControl.Label>}
   
         <Radio.Group
           flex={4}

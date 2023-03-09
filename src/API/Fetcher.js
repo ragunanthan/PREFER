@@ -2,7 +2,7 @@ import axios from "axios";
 import { getSecureData } from "../keychain/secureStorage";
 
 export const fetcher = axios.create({
-    baseURL :  "https://preferapi-production.up.railway.app/api",
+    baseURL :  "http://129.154.42.133/api",
     headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin' : "*"
@@ -13,6 +13,7 @@ export const fetcher = axios.create({
 fetcher.interceptors.response.use((response) => {
     return response
   }, async function (error) {
+    console.log(error);
     const originalRequest = error.config;
     if (error.response.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;

@@ -26,7 +26,6 @@ const Drawer = createDrawerNavigator();
 
 const theme = extendTheme({
   components: {
-
     Text: {
       baseStyle: {
         fontFamily: "Poppins-Regular",
@@ -98,7 +97,9 @@ function App() {
                   header: CommonHeader,
                   sceneContainerStyle: {
                     backgroundColor: "#eeeeee",
+                    flex :1,
                   },
+                  
                 })}
               >
                 <Drawer.Screen
@@ -152,6 +153,8 @@ function App() {
                   initialParams={{ title: "Team" }}
                   component={Team}
                 />
+
+
                 <Drawer.Screen
                   name="Contact"
                   initialParams={{ title: "Contact" }}

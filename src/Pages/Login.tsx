@@ -9,6 +9,8 @@ import {
   VStack,
   Text,
   Modal,
+  Toast,
+  useToast,
 } from "native-base";
 import React, { useState } from "react";
 import { Inputs } from "../Components/Form/InputForm";
@@ -18,6 +20,7 @@ import { logger } from "../utils/logger";
 import { setSecureData } from "../keychain/secureStorage";
 import { useAppContext } from "../provider/AppContext";
 import { fetcher } from "../API/Fetcher";
+import { ToastAlert } from "../Components/Toast";
 
 export const Login = (props: any) => {
   const { setUserState, showLogin, setShowLogin } = useAppContext();
@@ -111,6 +114,7 @@ export const Login = (props: any) => {
 
 
 export default function Logins(props: any) {
+  const toast = useToast();
   let { values } = props.route.params;
   const { userState, setUserState } = useAppContext();
   return (
@@ -135,10 +139,39 @@ export default function Logins(props: any) {
               setSecureData("userData", data);
               setUserState(data);
               props.navigation.navigate("Home");
+              toast.show({
+                id: "login",
+                render: ({ id }) => {
+                  return (
+                    <ToastAlert
+                      id={id}
+                      title={"Successfully  loggedIn"}
+                      status={"success"}
+                      variant="solid"
+                    />
+                  );
+                },
+                variant: "left-accent",
+              });
             }
           })
           .catch((e) => {
-            logger.error(e);
+            console.log(e);
+            
+            toast.show({
+              id: "loginerror",
+              render: ({ id }) => {
+                return (
+                  <ToastAlert
+                    id={id}
+                    title={JSON.stringify(e)}
+                    status={"error"}
+                    variant="solid"
+                  />
+                );
+              },
+              variant: "left-accent",
+            });
           });
       }}
       validationSchema={yup.object().shape({
@@ -193,6 +226,7 @@ export default function Logins(props: any) {
 }
 
 export function Signup({ navigation }: any) {
+  
   return (
     <Formik
       initialValues={{
@@ -211,7 +245,6 @@ export function Signup({ navigation }: any) {
             }
           })
           .catch((e) => {
-            logger.error(e);
           });
       }}
       validationSchema={yup.object().shape({

@@ -62,19 +62,17 @@ export function Header({ navigation }: any) {
 
 export function CommonHeader(props: any) {
   let { route, navigation } = props;
-
   return (
     <>
       <Box safeAreaTop color={"red"} />
       <HStack
-        height={100}
+       
         width={"100%"}
         bg="white"
         alignItems="center"
         justifyContent="space-between"
         shadow={3}
-        mb="6"
-        borderBottomRadius="10"
+        mb={props.route.name === "Dashboard" ? 0 : 6}
       >
         <Flex  flexDir={"row"} alignItems="center"  >
           <Menu navigation={navigation} />
@@ -82,8 +80,8 @@ export function CommonHeader(props: any) {
             {route?.params?.title ?? "Home"}
           </Text>
         </Flex>
-        <Box width={"60px"} height="80px">
-          <Image source={images.cow} width="100%" height={"100%"} alt="cow" />
+        <Box width={"40px"} py={3} height="80px">
+          <Image source={images.cow} width="100%" resizeMethod={"auto"} resizeMode={"stretch"} height={"100%"} alt="cow" />
         </Box>
       </HStack >
     </>

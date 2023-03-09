@@ -9,47 +9,57 @@ import {
   ChevronDownIcon,
 } from "native-base";
 import React from "react";
+type SelectPropType =  {
+  options: { value: string; label: string }[];
+  title: string;
+  placeholder: string;
+  onChage :(e:string) => void;
+  value : string;
+  error : string;
+  touched: boolean;
+}
 
 export default function SelectForm({
   options,
   title,
-  name,
-  placeholder
-}: {
-  options: { value: string; label: string }[];
-  title: string;
-  name: string;
-  placeholder: string;
-}) {
-  const [field, meta, helper] = useField(name ?? "");
+  value,
+  onChage,
+  touched,
+  placeholder,
+  error
+}:SelectPropType) {
+ 
 
   return (
-    <FormControl isInvalid={meta.touched && meta.error ? true : false}>
-      <Flex flexDirection={"row"} mt={4} alignItems="center">
-        <FormControl.Label flex={3}>{title}</FormControl.Label>
-        <Text flex={0.2}>:</Text>
-        <Select
-          flex={4}
-          variant={"underlined"}
-          dropdownIcon={<ChevronDownIcon size={"sm"} />}
-          accessibilityLabel={placeholder}
-          placeholder={placeholder}
-          _selectedItem={{
-            bg: "grey",
-          }}
-          fontSize={"md"}
-          selectedValue={field.value}
-          onValueChange={(val) => helper.setValue(val)}
-        >
-          {options.map(({ value = "0", label = "-" }) => (
-            <Select.Item label={label} value={value} />
-          ))}
-        </Select>
-      </Flex>
+    <FormControl isInvalid={touched && error ? true : false}>
+      <FormControl.Label>{title}</FormControl.Label>
+
+      <Select
+        variant={"underlined"}
+        dropdownIcon={<ChevronDownIcon size={"sm"} />}
+        accessibilityLabel={placeholder}
+        placeholder={placeholder}
+        _selectedItem={{
+          bg: "grey",
+        }}
+        fontSize={"md"}
+        selectedValue={value}
+        onValueChange={onChage}
+      >
+        {options.map(({ value = "0", label = "-" }) => (
+          <Select.Item label={label} value={value} />
+        ))}
+      </Select>
 
       <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-        {meta.error}
+        {error}
       </FormControl.ErrorMessage>
     </FormControl>
   );
+}
+
+
+export const SelectFormFormik = ({name, ...rest} : SelectPropType & { name: string}) => {
+  const [field, meta, helper] = useField(name ?? "");
+  return <SelectForm {...rest} touched={meta.touched} error={meta.error ?? ""} value={field.value} onChage={(val) => helper.setValue(val)} />
 }
