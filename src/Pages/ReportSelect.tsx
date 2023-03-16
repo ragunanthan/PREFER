@@ -8,13 +8,21 @@ import {
   Text,
   Button,
 } from "native-base";
-import React, { useState } from "react";
-import MonthPicker from "react-native-month-year-picker";
+import React, { useEffect, useState } from "react";
+import MonthPicker from  "../Components/Form/MonthPicker";
 import { style } from "../Components/Container";
 import { DatePicker } from "../Components/Form/DatePicker";
 import { Inputs } from "../Components/Form/InputForm";
 import { SelectFormFormik } from "../Components/Form/SelectForm";
 import { RadioGroupFormik } from "../Components/Form/RadioGroup";
+import { FetchByDate, FetchByMonth, FetchByYear } from "../API/dashboard";
+import { ENDPOINTS, fetcher } from "../API/Fetcher";
+
+enum TYPES {
+  DATE = 1,
+  MONTHLY = 2,
+  YEARLY = 3,
+}
 const ReportSelect = () => {
   const [selectedReport, setSelectedReport] = useState(0);
   return (
@@ -34,46 +42,54 @@ const ReportSelect = () => {
         {[
           {
             label: "By Date",
-            value: 1,
+            value: TYPES.DATE,
+            Component: DateFilter,
           },
           {
             label: "Monthly",
-            value: 2,
+            value: TYPES.MONTHLY,
+            Component: MonthFilter,
           },
           {
             label: "Yearly",
-            value: 3,
+            value: TYPES.YEARLY,
+            Component: YearFilter,
           },
-        ].map(({ label, value }) => (
-          <Box flex={selectedReport === value ? 1 : 0}>
-            <Pressable
-              bg={"lightgrey"}
-              my={3}
-              onPress={() => setSelectedReport(value)}
-              borderRadius={2}
-            >
-              {({ isHovered, isFocused, isPressed }) => {
-                return (
-                  <Flex
-                    p={4}
-                    flexDir={"row"}
-                    bg={isFocused ? "red" : "green"}
-                    justifyContent={"space-between"}
-                  >
-                    <Text>{label}</Text>
-                    <Checkbox
-                      rounded={"full"}
-                      isChecked={selectedReport === value}
-                      color="green"
-                      value={`${value}`}
-                    />
-                  </Flex>
-                );
-              }}
-            </Pressable>
-            {selectedReport === value && <FilterComponent />}
-          </Box>
-        ))}
+        ].map(({ label, value, Component }) => {
+          let FilterComponent = Component;
+          return (
+            <Box flex={selectedReport === value ? 1 : 0} key={value}>
+              <Pressable
+                bg={"lightgrey"}
+                my={3}
+                onPress={() => setSelectedReport(value)}
+                borderRadius={2}
+              >
+                {({ isHovered, isFocused, isPressed }) => {
+                  return (
+                    <Flex
+                      p={4}
+                      flexDir={"row"}
+                      bg={isFocused ? "red" : "green"}
+                      justifyContent={"space-between"}
+                    >
+                      <Text>{label}</Text>
+                      <Checkbox
+                        rounded={"full"}
+                        isChecked={selectedReport === value}
+                        color="green"
+                        arial-label={value}
+                        value={`${value}`}
+                        onChange={() => setSelectedReport(value)}
+                      />
+                    </Flex>
+                  );
+                }}
+              </Pressable>
+              {selectedReport === value && <FilterComponent />}
+            </Box>
+          );
+        })}
       </Flex>
     </ScrollView>
   );
@@ -81,52 +97,179 @@ const ReportSelect = () => {
 
 export default ReportSelect;
 
-function FilterComponent() {
-  // const [user, setUser] = useState([]);
-  // const [filter, setFilter] = useState({});
-  // const isFocused = useIsFocused();
-
-  // useEffect(() => {
-  //   const unsubscribe = props.navigation.addListener("focus", () => {
-  //     if (userState === null) {
-  //       props.navigation.navigate("Login");
-  //     }
-  //   });
-  //   fetcher.get(ENDPOINTS.ALLUSER).then((e) => {
-  //     setUser(e.data);
-  //   });
-  //   return unsubscribe;
-  // }, [userState]);
+function DateFilter() {
+  const { UserDropDown } = useUserDropDown({withBullID : true});
   return (
     <Formik
       initialValues={{
         bullID: "",
         date: "1",
-        checkAll : "0",
+        checkAll: "0",
         user: "",
       }}
-      onSubmit={() => {}}
-    >
-      {({ values }) => (
-        <Flex flex={1} m={3} my={2} alignItems={"center"} >
-          <Box flex={1} width={"100%"}>
-            <Inputs name={"bullID"} title={"Bull ID"} />
-            <Box my={2}>
-            <RadioGroupFormik title={""} name={"checkAll"} option={[{label : "All Date", value : "0"}, {label : "By date", value : "1"}]} />
-            </Box>
-            {values.checkAll === "1" && <DatePicker name={"date"} label={"Date"} placeholder={"All Date"} />}
-          </Box>
-          {/* <SelectFormFormik
-            options={[{ value: "", label: "All" }, ...user]}
-            title="By User"
-            placeholder={"Select User"}
-            name={"user"}              />
-                */}
-          <Button width={"40"} onPress={() => {
+      onSubmit={(values) => {
+        console.log("", values);
 
-          }}>Filter</Button>
+        FetchByDate({
+          bullID: 0,
+          date: "",
+        });
+      }}
+    >
+      {({ values, handleSubmit }) => (
+        <Flex flex={1} m={3} my={2} alignItems={"center"}>
+          <Box flex={1} width={"100%"}>
+            <UserDropDown />
+            <Box my={2}>
+              <RadioGroupFormik
+                title={""}
+                name={"checkAll"}
+                option={[
+                  { label: "All Date", value: "0" },
+                  { label: "By date", value: "1" },
+                ]}
+              />
+            </Box>
+            {values.checkAll === "1" && (
+              <DatePicker
+                name={"date"}
+                label={"Date"}
+                placeholder={"All Date"}
+              />
+            )}
+          </Box>
+
+          <Button width={"40"} onPress={handleSubmit}>
+            Filter
+          </Button>
         </Flex>
       )}
     </Formik>
   );
 }
+
+function MonthFilter() {
+  const { UserDropDown } = useUserDropDown({withBullID : false});
+  return (
+    <Formik
+      initialValues={{
+        bullID: "",
+        date: "1",
+        checkAll: "0",
+        user: "",
+      }}
+      onSubmit={(values) => {
+        console.log("", values);
+
+        FetchByMonth({
+          year: 0,
+          month: "",
+        });
+      }}
+    >
+      {({ values, handleSubmit }) => (
+        <FilterWrapper handleSubmit={handleSubmit}>
+          <UserDropDown />
+
+          <Box my={2}>
+            <RadioGroupFormik
+              title={""}
+              name={"checkAll"}
+              option={[
+                { label: "All Date", value: "0" },
+                { label: "By date", value: "1" },
+              ]}
+            />
+          </Box>
+          <MonthPicker  />
+          {values.checkAll === "1" && (
+            <DatePicker name={"date"} label={"Date"} placeholder={"All Date"} />
+          )}
+        </FilterWrapper>
+      )}
+    </Formik>
+  );
+}
+
+function YearFilter() {
+  const { UserDropDown } = useUserDropDown({withBullID : true, withBullIDReq : true});
+  return (
+    <Formik
+      initialValues={{
+        bullID: "",
+        date: "1",
+        checkAll: "0",
+        user: "",
+      }}
+      onSubmit={(values) => {
+        console.log("", values);
+
+        FetchByYear({
+          bullID: 0,
+          year: 0,
+        });
+      }}
+    >
+      {({ values, handleSubmit }) => (
+        <FilterWrapper handleSubmit={handleSubmit}>
+          <UserDropDown />
+          <Box my={2}>
+            <RadioGroupFormik
+              title={""}
+              name={"checkAll"}
+              option={[
+                { label: "All Date", value: "0" },
+                { label: "By date", value: "1" },
+              ]}
+            />
+          </Box>
+          {values.checkAll === "1" && (
+            <DatePicker name={"date"} label={"Date"} placeholder={"All Date"} />
+          )}
+        </FilterWrapper>
+      )}
+    </Formik>
+  );
+}
+
+const useUserDropDown = ({ withBullID, withBullIDReq = false } : {  withBullID : boolean; withBullIDReq?: boolean; }) => {
+  const [user, setUser] = useState([]);
+  useEffect(() => {
+    fetcher.get(ENDPOINTS.ALLUSER).then((e) => {
+      setUser(e.data);
+    });
+  }, []);
+  const UserDropDown = () => (
+    <>
+      <SelectFormFormik
+        options={[{ value: "", label: "All" }, ...user]}
+        title="By User"
+        placeholder={"Select User"}
+        name={"user"}
+      />
+      {withBullID && <Inputs name={"bullID"} title={"Bull ID"} required={withBullIDReq} />}
+    </>
+  );
+
+  return { UserDropDown };
+};
+
+const FilterWrapper = ({
+  children,
+  handleSubmit,
+}: {
+  children: any;
+  handleSubmit: () => void;
+}) => {
+  return (
+    <Flex flex={1} m={3} my={2} alignItems={"center"}>
+      <Box flex={1} width={"100%"}>
+        {children}
+      </Box>
+
+      <Button width={"40"} onPress={handleSubmit}>
+        Filter
+      </Button>
+    </Flex>
+  );
+};

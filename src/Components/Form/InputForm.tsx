@@ -13,18 +13,20 @@ export function Inputs({
   name,
   form = false,
   type = "text",
-  keyboardType = "default"
+  keyboardType = "default",
+  required = false
 }: {
   name: string;
   title: string;
   form?: boolean;
   type?: "text" | "password";
-  keyboardType?: "numeric" | "default"
+  keyboardType?: "numeric" | "default";
+  required?: boolean;
 }) {
   const [field, meta, helper] = useField(name);
   if (form)
     return (
-      <FormControl isInvalid={meta.touched && meta.error ? true : false}>
+      <FormControl isInvalid={meta.touched && meta.error ? true : false} isRequired={required} >
         <Flex flexDirection={"row"} mt={4} alignItems="center">
           <FormControl.Label flex={3}>{title}</FormControl.Label>
           <Text flex={0.2}>:</Text>
@@ -44,7 +46,7 @@ export function Inputs({
     );
   else
     return (
-      <FormControl isInvalid={meta.touched && meta.error ? true : false}>
+      <FormControl isInvalid={meta.touched && meta.error ? true : false}  isRequired={required}>
         <FormControl.Label colorScheme={"black"} >{title} {form ? `:` : null}</FormControl.Label>
         <Input
           type={type}

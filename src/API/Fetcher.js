@@ -36,6 +36,9 @@ export const ENDPOINTS = {
     REFERSH_TOKEN : "/refreshToken",
     LOGOUT : "/refreshToken/logut",
     PREFER : "/prefer",
-    ALLUSER : "/user"
+    ALLUSER : "/user",
+    GETBYDATE : "/filterByDate",
+    GETBYMONTH :  "/filterByMonth",
+    GETBYYEAR : "/filterByYear"
 }
 

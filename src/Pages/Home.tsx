@@ -60,7 +60,7 @@ export const TabBar = ({ navigation, navgationArr }: any) => {
         width={maxWidth ?? "0px"}
         flexDirection={"row"}
       >
-        {navgationArr.map((i: any) => {
+        {navgationArr.map((i: any, index : number) => {
           return (
             <Pressable
               onPress={() => navigation?.navigate(i.navigation)}
@@ -68,6 +68,7 @@ export const TabBar = ({ navigation, navgationArr }: any) => {
               flex={1}
               height={"100%"}
               display={"flex"}
+              key={index}
             >
               {({ isHovered, isFocused, isPressed }) => {
                 return (

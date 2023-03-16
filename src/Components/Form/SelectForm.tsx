@@ -13,10 +13,10 @@ type SelectPropType =  {
   options: { value: string; label: string }[];
   title: string;
   placeholder: string;
-  onChage :(e:string) => void;
-  value : string;
-  error : string;
-  touched: boolean;
+  onChage ?:(e:string) => void;
+  value ?: string;
+  error ?: string;
+  touched ?: boolean;
 }
 
 export default function SelectForm({
@@ -35,7 +35,7 @@ export default function SelectForm({
       <FormControl.Label>{title}</FormControl.Label>
 
       <Select
-        variant={"underlined"}
+        variant={"outline"}
         dropdownIcon={<ChevronDownIcon size={"sm"} />}
         accessibilityLabel={placeholder}
         placeholder={placeholder}
@@ -45,9 +45,11 @@ export default function SelectForm({
         fontSize={"md"}
         selectedValue={value}
         onValueChange={onChage}
+        
+        
       >
         {options.map(({ value = "0", label = "-" }) => (
-          <Select.Item label={label} value={value} />
+          <Select.Item key={value} label={label} value={value} />
         ))}
       </Select>
 
