@@ -21,6 +21,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import Login, { Signup } from "./Pages/Login";
 import AppContextProvier from "./provider/AppContext";
 import Dashboard from "./Pages/Dashboard";
+import { FilterByDate, FilterByMonth, FilterByYear } from "./Pages/Filter";
+import { Path } from "./utils/Const";
 
 const Drawer = createDrawerNavigator();
 
@@ -111,6 +113,21 @@ function App() {
                   name="Dashboard"
                   initialParams={{ title: "Dashboard" }}
                   component={Dashboard}
+                />
+                <Drawer.Screen
+                  name={Path.FilterByDate}
+                  initialParams={{ title: "Filter By Date" }}
+                  component={FilterByDate}
+                />
+                <Drawer.Screen
+                  name={Path.FilterByMonth}
+                  initialParams={{ title: "Filter By Month" }}
+                  component={FilterByMonth}
+                />
+                <Drawer.Screen
+                  name={Path.FilterByYear}
+                  initialParams={{ title: "Filter By Year" }}
+                  component={FilterByYear}
                 />
                 <Drawer.Screen
                   name="Signup"

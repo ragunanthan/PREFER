@@ -29,6 +29,7 @@ export function RadioGroup({
           name="exampleGroup"
           value={value}
           onChange={onChange}
+          accessibilityRole={"checkbox"}
         >
           <HStack space={4}>
             {option.map((i) => (

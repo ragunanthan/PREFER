@@ -33,10 +33,10 @@ export function Inputs({
           <Input
             flex={4}
             variant={"underlined"}
-            onPressIn={() => helper.setTouched(true)}
-            value={field.value}
+            {...field}
             onChangeText={(t) => helper.setValue(t)}
             isInvalid={meta.touched && meta.error ? true : false}
+            
           />
         </Flex>
         <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
@@ -50,7 +50,9 @@ export function Inputs({
         <FormControl.Label colorScheme={"black"} >{title} {form ? `:` : null}</FormControl.Label>
         <Input
           type={type}
-          onPressIn={() => helper.setTouched(true)}
+          onBlur={() => {
+            helper.setTouched(true)
+          }}
           value={field.value}
           onChangeText={(t) => helper.setValue(t)}
           isInvalid={meta.touched && meta.error ? true : false}

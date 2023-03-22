@@ -156,7 +156,7 @@ export default function Logins(props: any) {
             }
           })
           .catch((e) => {
-            console.log(e);
+            logger.log(e);
             
             toast.show({
               id: "loginerror",

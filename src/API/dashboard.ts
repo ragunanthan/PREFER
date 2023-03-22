@@ -8,7 +8,7 @@ type filterByBullIDType = {
 };
 
 type filterByYearType = {
-  year: number;
+  year: string;
 };
 
 export async function FetchByDate(

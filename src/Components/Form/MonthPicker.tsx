@@ -1,10 +1,12 @@
 import dayjs from 'dayjs';
+import { useField } from 'formik';
 import React, { useState, useCallback } from 'react';
 import { View, SafeAreaView, Text } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MonthPickers from 'react-native-month-year-picker';
 
-const MonthPicker = () => {
+const MonthPicker = ({ name } : { name : string }) => {
+  const [field, meta, helper] = useField(name);
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
 
@@ -39,5 +41,7 @@ const MonthPicker = () => {
     </SafeAreaView>
   );
 };
+
+
 
 export default MonthPicker;

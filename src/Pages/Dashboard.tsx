@@ -15,7 +15,7 @@ import { logger } from "../utils/logger";
 import { RefreshControl, StyleSheet } from "react-native";
 import { Button, Actionsheet, useDisclose } from "native-base";
 import { useAppContext } from "../provider/AppContext";
-import { DrawerActions, useIsFocused } from "@react-navigation/native";
+import { DrawerActions, NavigationProp, useIsFocused } from "@react-navigation/native";
 import { Fab } from "native-base";
 import dayjs from "dayjs";
 import { FilterIcon } from "../Components/FilterIcon";
@@ -23,8 +23,10 @@ import { Filter } from "../Components/Filter";
 import SelectForm from "../Components/Form/SelectForm";
 import ReportSelect from "./ReportSelect";
 
-export default function Default() {
-  return <ReportSelect />
+export type DashboardProp =  {navigation : any}
+export default function Default({ navigation} : DashboardProp) {
+
+  return <ReportSelect navigation={navigation} />
 }
 
 
@@ -99,7 +101,7 @@ export function LoginPlease(props: any) {
   );
 }
 
-function ShowData(props: any) {
+export function ShowData(props: any) {
   const [state, setState] = useState<any>({
     data: [],
     isAdmin: false,
@@ -260,6 +262,7 @@ function ShowData(props: any) {
 }
 
 function List({ title, value }: any) {
+  
   return (
     <HStack space={"3"}>
       <Text>{title} : </Text>
@@ -267,6 +270,11 @@ function List({ title, value }: any) {
     </HStack>
   );
 }
+
+
+
+
+
 
 const styles = StyleSheet.create({
   head: { height: 40, backgroundColor: "#f1f8ff", color: "black" },
@@ -276,4 +284,5 @@ const styles = StyleSheet.create({
   text: { textAlign: "center", color: "black" },
 });
 
- 
+
+
