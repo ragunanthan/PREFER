@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { Box, Flex, HStack, Text, View } from "native-base";
+import { Box, Flex, Heading, HStack, ScrollView, Text, View, VStack } from "native-base";
 import React, { useEffect, useMemo, useState } from "react";
 import { RefreshControl } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -40,74 +40,33 @@ export default function FilterByYear(props: any) {
       bullID: 408,
     })
       .then((r) => {
-        setState([...state, ...r.data]);
+        setState(r.data);
         setFetching(false);
       })
       .catch((e) => {
         logger.error(e);
       });
   }
-  console.log(state);
 
-  const onRefersh = () => {};
   return (
-    <>
-      <TableHeader
-        Header={[
-          { label: "S.no", space: 0.5, style: { alignItems: "center" } },
-
-          { label: "Month", space: 0.6, style: { alignItems: "center" } },
-          {
-            label: "No of Ejaculates collected",
-            space: 0.6,
-            style: { alignItems: "center" },
-          },
-          {
-            label: "No of Ejaculates accepted",
-            space: 0.6,
-            style: { alignItems: "center" },
-          },
-          {
-            label: "Ejaculates accepted (%)",
-            space: 0.8,
-            style: { alignItems: "center" },
-          },
-        ]}
-      />
-      <FlatList
-        data={state}
-        ListEmptyComponent={state.length ? null : <Text>No Data found</Text>}
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={onRefersh} />
-        }
-        onEndReachedThreshold={0.02}
-        onEndReached={() => {
-          if (!fetching) setPage((pre) => pre + 1);
-        }}
-        renderItem={({ item, index }: { item: any; index: any }) => {
-          let lastItem = state.length - 1 === index;
-          console.log(item);
-
-          return (
-            <Container
-              item={item}
-              key={index}
-              index={index}
-              lastItem={lastItem}
-            />
-          );
-        }}
-      />
-    </>
+   <VStack space={3} flex={1}>
+    <HStack justifyContent={"space-between"} pt={0} p={3}>
+    <Heading size={"md"}>Year : {dayjs(values.date).format("YYYY") ?? 0}</Heading>
+    <Heading size={"md"}>Bull : {values.bullID ?? 0}</Heading>
+    </HStack>
+     <ScrollView px={2}>
+      <VStack space={4}>
+        {state.map((item: any, index: any) => {
+          return <CardContainer item={item} key={index} />;
+        })}
+      </VStack>
+    </ScrollView>
+   </VStack>
   );
 }
 
-
-
-function Container({
+function CardContainer({
   item,
-  index,
-  lastItem,
 }: {
   item: {
     bullID: string;
@@ -116,36 +75,27 @@ function Container({
     ejac_accepted: string;
     ejac_percent: string;
   };
-  index: number;
-  lastItem: boolean;
 }) {
   return (
-    <View key={index} pb={lastItem ? "32" : 0}>
-      <HStack
-        key={index}
-        // {...borderBottomTableStyle(data.length - 1 === index)}
-      >
-        <Flex flex={0.5} alignItems={"center"} {...borderTableStyle}>
-          <Text>{index + 1}</Text>
-        </Flex>
-        <Flex flex={0.6} alignItems={"center"} {...borderTableStyle}>
-          <Text>{dayjs().month(item.month - 1).format("MMM")}</Text>
-        </Flex>
-        <Flex flex={0.6} alignItems={"center"} {...borderTableStyle}>
-          <Text>{item.ejac_collected}</Text>
-        </Flex>
-        <Flex flex={0.6} alignItems={"center"} {...borderTableStyle}>
-          <Text>{item.ejac_accepted}</Text>
-        </Flex>
-        <Flex flex={0.6} alignItems={"center"} {...borderTableStyle}>
-          <Text>{item.ejac_percent}</Text>
-        </Flex>
-        {/* <Flex flex={0.8} alignItems={"center"} {...borderTableStyle}>
-          <Text color={item.isAccept ? "green.600" : "red.600"}>
-            {item.isAccept ? "Accept" : "Reject"}
-          </Text>
-        </Flex> */}
+    <VStack space={"2"} borderRadius={4} shadow="4" bg={"white"} p={3}>
+      <HStack justifyContent={"space-between"}>
+        <Text fontSize={"md"} fontWeight={"bold"}>
+          {dayjs()
+            .month(item.month - 1)
+            .format("MMMM")}
+        </Text>
+        <Text>{item.ejac_percent}%</Text>
       </HStack>
-    </View>
+      <VStack pl={3}>
+        <HStack>
+          <Text flex={0.5}>No of ejaculates : </Text>
+          <Text>{item.ejac_collected}</Text>
+        </HStack>
+        <HStack>
+          <Text flex={0.5}>Accepted ejaculates :</Text>
+          <Text>{item.ejac_accepted}</Text>
+        </HStack>
+      </VStack>
+    </VStack>
   );
 }
