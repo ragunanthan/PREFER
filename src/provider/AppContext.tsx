@@ -10,6 +10,7 @@ type AppContexttype = {
     email: string;
     userId: number;
     name : string;
+    isAdmin : boolean;
   };
   setUserState: React.Dispatch<React.SetStateAction<null>>;
   showLogin : boolean;

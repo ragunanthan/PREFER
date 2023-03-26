@@ -119,17 +119,17 @@ function App() {
                         />
                         <Drawer.Screen
                           name={Path.FilterByDate}
-                          initialParams={{ title: "Filter By Date" }}
+                          initialParams={{ title: "By Date" }}
                           component={FilterByDate}
                         />
                         <Drawer.Screen
                           name={Path.FilterByMonth}
-                          initialParams={{ title: "Filter By Month" }}
+                          initialParams={{ title: "By Month" }}
                           component={FilterByMonth}
                         />
                         <Drawer.Screen
                           name={Path.FilterByYear}
-                          initialParams={{ title: "Filter By Year" }}
+                          initialParams={{ title: "By Year" }}
                           component={FilterByYear}
                         />
                       </>

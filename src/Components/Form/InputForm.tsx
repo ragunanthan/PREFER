@@ -36,7 +36,6 @@ export function Inputs({
             {...field}
             onChangeText={(t) => helper.setValue(t)}
             isInvalid={meta.touched && meta.error ? true : false}
-            
           />
         </Flex>
         <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>

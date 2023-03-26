@@ -2,6 +2,7 @@ import { ENDPOINTS, fetcher } from "./Fetcher";
 
 type filterType = {
   authorId?: number;
+  page?: string | number
 };
 type filterByBullIDType = {
   bullID: number;

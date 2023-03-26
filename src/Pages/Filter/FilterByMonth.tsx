@@ -20,10 +20,12 @@ export default function FilterByMonth(props: any) {
 
   const [state, setState] = useState<any>([]);
   const [fetching, setFetching] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
-      FetchData();
+      setState([]);
+      setPage(1);
     });
 
     return unsubscribe;
@@ -43,10 +45,15 @@ export default function FilterByMonth(props: any) {
       month: values.date
         ? dayjs(values.date).format("M")
         : dayjs(new Date()).format("M"),
-      authorId: 0,
+        authorId: values?.user ?? null,
+      page 
     })
       .then((r) => {
+        if (r.data.length === 0) {
+          setHasMore(false);
+        } else {
         setState([...state, ...r.data]);
+        }
         setFetching(false);
       })
       .catch((e) => {
@@ -54,7 +61,15 @@ export default function FilterByMonth(props: any) {
       });
   }
 
-  const onRefersh = () => {};
+  const renderFooter = () => {
+    if (!fetching) return null;
+
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
+  };
   const Separator = () => <View m={2} />;
 
   return (
@@ -67,13 +82,14 @@ export default function FilterByMonth(props: any) {
       <FlatList
         data={state}
         ListEmptyComponent={state.length ? null : <Text>No Data found</Text>}
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={onRefersh} />
-        }
-        onEndReachedThreshold={0.02}
+        // refreshControl={
+        //   <RefreshControl refreshing={false} onRefresh={onRefersh} />
+        // }
+        onEndReachedThreshold={0.5}
         onEndReached={() => {
-          if (!fetching) setPage((pre) => pre + 1);
+          if (!fetching && hasMore) setPage((pre) => pre + 1);
         }}
+        ListFooterComponent={renderFooter}
         ItemSeparatorComponent={Separator}
         renderItem={({ item, index }: { item: any; index: any }) => {
           return <Container item={item} key={index} index={index} />;

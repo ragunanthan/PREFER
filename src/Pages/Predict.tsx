@@ -17,8 +17,6 @@ import { RadioGroupFormik } from "../Components/Form/RadioGroup";
 import { useAppContext } from "../provider/AppContext";
 import { style } from "../Components/Container";
 import { ToastAlert } from "../Components/Toast";
-import { DrawerActions } from "@react-navigation/native";
-import { LoginPlease } from "./Dashboard";
 
 export function Predict(props: any) {
   const [calculatedValue, setCalculatedValue] = useState<number | null>(null);
@@ -128,7 +126,7 @@ export function Predict(props: any) {
               >
                 Process
               </Button>
-              <Text color={calculatedValue ?? 0 > 18? "red.600" : "green.600"} py={3} fontSize={"xl"} >
+              <Text color={calculatedValue ?? 0 >= 18? "red.600" : "green.600"} py={3} fontSize={"xl"} >
                 {calculatedValue ? "Result : " +  calculatedValue : "-"}
               </Text>
             </VStack>

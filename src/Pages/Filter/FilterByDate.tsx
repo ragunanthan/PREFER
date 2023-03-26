@@ -9,24 +9,23 @@ import {
   borderBottomTableStyle,
   borderTableStyle,
 } from "../../Components/Table/TableStyle";
+import { useAppContext } from "../../provider/AppContext";
 import { logger } from "../../utils/logger";
 
 export default function FilterByDate(props: any) {
   let { route } = props;
   const { values } = route.params;
-  console.log(values);
-
-  const [state, setState] = useState<any>({
-    data: [],
-    isAdmin: false,
-  });
-
-  let isAdmin = state.isAdmin;
+  const [state, setState] = useState<any>([]);
+  const { userState } = useAppContext();
+  let isAdmin = userState?.isAdmin ?? false;
   const [fetching, setFetching] = useState(false);
   const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
-      FetchData();
+      setState([]);
+      setPage(1);
     });
 
     return unsubscribe;
@@ -41,37 +40,45 @@ export default function FilterByDate(props: any) {
 
     FetchByDate({
       bullID: values?.bullID ?? null,
-      date: values?.checkAll ? null : values?.date,
+      date: values?.viewAllDate ? null : values?.date,
       authorId: values?.user ?? null,
+      page: page,
     })
       .then((r) => {
-        setState({
-          data: [...state.data, ...r.data],
-          isAdmin: true,
-        });
+        if (r.data.length === 0) {
+          setHasMore(false);
+        } else {
+          setState([...state, ...r.data]);
+        }
         setFetching(false);
       })
       .catch((e) => {
         logger.error(e);
+        setFetching(false);
       });
   }
 
   let ViewData = useMemo(
     () =>
       state
-        ? {
-            ...state,
-            data: state.data.reduce((pre: any, curr: any) => {
-              let date = dayjs(curr.createdAt).format("DD-MMM-YYYY");
-              pre[date] = pre[date] ? [...pre[date], curr] : [curr];
-              return pre;
-            }, {}),
-          }
-        : { data: [] },
+        ? state.reduce((pre: any, curr: any) => {
+          let date = dayjs(curr.createdAt).format("DD-MMM-YYYY");
+          pre[date] = pre[date] ? [...pre[date], curr] : [curr];
+          return pre;
+        }, {})
+        : {},
     [state]
   );
 
-  const onRefersh = () => {};
+  const renderFooter = () => {
+    if (!fetching) return null;
+
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
+  };
   return (
     <>
       <TableHeader
@@ -80,7 +87,7 @@ export default function FilterByDate(props: any) {
           isAdmin && !values.user ? { label: "User", space: 1 } : false,
           { label: "Bull ID", space: 0.6, style: { alignItems: "center" } },
           {
-            label: "Ejakulation No",
+            label: "Ej.No",
             space: 0.6,
             style: { alignItems: "center" },
           },
@@ -88,20 +95,20 @@ export default function FilterByDate(props: any) {
         ]}
       />
       <FlatList
-        data={Object.keys(ViewData.data)}
+        data={Object.keys(ViewData)}
         ListEmptyComponent={
-          Object.keys(ViewData.data).length ? null : <Text>No Data found</Text>
+          Object.keys(ViewData).length ? null : <Text>No Data found</Text>
         }
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={onRefersh} />
-        }
-        onEndReachedThreshold={0.02}
+        // refreshControl={
+        //   <RefreshControl refreshing={false} onRefresh={onRefersh} />
+        // }
+        onEndReachedThreshold={0.5}
         onEndReached={() => {
-          if (!fetching) setPage((pre) => pre + 1);
+          if (!fetching && hasMore) setPage((pre) => pre + 1);
         }}
+        ListFooterComponent={renderFooter}
         renderItem={({ item, index }: { item: any; index: any }) => {
-          let data: any[] = ViewData.data[item];
-          let lastItem = Object.keys(ViewData.data).length - 1 === index;
+          let data: any[] = ViewData[item];
           return (
             <Container
               isAdmin={isAdmin}
@@ -109,7 +116,7 @@ export default function FilterByDate(props: any) {
               item={item}
               key={index}
               index={index}
-              lastItem={lastItem}
+              values={values}
             />
           );
         }}
@@ -122,17 +129,17 @@ function Container({
   data,
   item,
   index,
-  lastItem,
+  values,
   isAdmin,
 }: {
   isAdmin: boolean;
   data: any;
   item: string;
   index: number;
-  lastItem: boolean;
+  values : any
 }) {
   return (
-    <View key={index} pb={lastItem ? "32" : 0}>
+    <View key={index}>
       <Box {...borderBottomTableStyle} {...borderBottomTableStyle(true)}>
         <Text fontSize={"md"} fontWeight={"medium"} px={2} py={3}>
           {item}
@@ -146,7 +153,7 @@ function Container({
           <Flex flex={0.5} alignItems={"center"} {...borderTableStyle}>
             <Text>{index + 1}</Text>
           </Flex>
-          {isAdmin && val?.author?.name ? (
+          {isAdmin &&  !values.user ? (
             <Flex flex={1} pl={1} {...borderTableStyle}>
               <Text>{val.author.name}</Text>
             </Flex>

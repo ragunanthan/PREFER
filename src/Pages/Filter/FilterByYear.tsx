@@ -17,9 +17,10 @@ export default function FilterByYear(props: any) {
   const [state, setState] = useState<any>([]);
   const [fetching, setFetching] = useState(false);
   const [page, setPage] = useState(1);
+  
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
-      FetchData();
+      setState([]);
     });
 
     return unsubscribe;
@@ -36,8 +37,8 @@ export default function FilterByYear(props: any) {
       year: values.date
         ? dayjs(values.date).format("YYYY")
         : dayjs(new Date()).format("YYYY"),
-      authorId: 0,
-      bullID: 408,
+        authorId: values?.user ?? null,
+        bullID: values?.bullID ?? null
     })
       .then((r) => {
         setState(r.data);

@@ -7,18 +7,21 @@ import {
   ScrollView,
   Text,
   Button,
+  HStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import MonthPicker from "../Components/Form/MonthPicker";
 import { style } from "../Components/Container";
 import { DatePicker } from "../Components/Form/DatePicker";
 import { Inputs } from "../Components/Form/InputForm";
-import { SelectFormFormik } from "../Components/Form/SelectForm";
+import SelectForm from "../Components/Form/SelectForm";
 import { RadioGroupFormik } from "../Components/Form/RadioGroup";
 import { FetchByDate, FetchByMonth, FetchByYear } from "../API/dashboard";
 import { ENDPOINTS, fetcher } from "../API/Fetcher";
 import { DashboardProp } from "./Dashboard";
 import { Path } from "../utils/Const";
+import { useAppContext } from "../provider/AppContext";
+import * as yup from "yup";
+import dayjs from "dayjs";
 
 enum TYPES {
   DATE = 1,
@@ -26,7 +29,10 @@ enum TYPES {
   YEARLY = 3,
 }
 const ReportSelect = ({ navigation }: DashboardProp) => {
+  const { userState } = useAppContext();
   const [selectedReport, setSelectedReport] = useState(0);
+  let admin = userState?.isAdmin ?? false;
+  const [selectedUser, setSelectedUser] = useState(admin ? "All" : `${userState?.userId}` ?? "");
   return (
     <ScrollView
       {...style}
@@ -37,9 +43,19 @@ const ReportSelect = ({ navigation }: DashboardProp) => {
         flexGrow: 1,
       }}
     >
-      <Text fontWeight={"normal"} fontSize={"xl"}>
-        Reports
-      </Text>
+      <HStack alignItems={"center"} justifyContent={"space-between"}>
+        <Text fontWeight={"normal"} fontSize={"xl"}>
+          Reports
+        </Text>
+        {admin && <Box flex={0.5}>
+          <UserDropDown
+            value={selectedUser}
+            onChange={(e) => {
+              setSelectedUser(e);
+            }}
+          />
+        </Box>}
+      </HStack>
       <Flex flex={1} mt={3} height={"100%"}>
         {[
           {
@@ -48,12 +64,12 @@ const ReportSelect = ({ navigation }: DashboardProp) => {
             Component: DateFilter,
           },
           {
-            label: "Monthly",
+            label: "By Month",
             value: TYPES.MONTHLY,
             Component: MonthFilter,
           },
           {
-            label: "Yearly",
+            label: "By Yearly",
             value: TYPES.YEARLY,
             Component: YearFilter,
           },
@@ -77,20 +93,20 @@ const ReportSelect = ({ navigation }: DashboardProp) => {
                       borderRadius={3}
                     >
                       <Text>{label}</Text>
-                      {/* <Checkbox
+                      <Checkbox
                         rounded={"full"}
                         isChecked={selectedReport === value}
                         color="green"
                         arial-label={value}
                         value={`${value}`}
                         onChange={() => setSelectedReport(value)}
-                      /> */}
+                      />
                     </Flex>
                   );
                 }}
               </Pressable>
               {selectedReport === value && (
-                <FilterComponent navigation={navigation} />
+                <FilterComponent navigation={navigation} selectedUser={selectedUser} />
               )}
             </Box>
           );
@@ -102,26 +118,30 @@ const ReportSelect = ({ navigation }: DashboardProp) => {
 
 export default ReportSelect;
 
-function DateFilter({ navigation }: DashboardProp) {
-  const { UserDropDown } = useUserDropDown({ withBullID: true });
+type FilterProp  = {
+  selectedUser : any
+}
+function DateFilter({ navigation, selectedUser }: DashboardProp & FilterProp) {
   return (
     <Formik
       initialValues={{
         bullID: "",
-        date: "1",
+        date: dayjs().format(),
         checkAll: "0",
-        user: "",
       }}
       onSubmit={(values) => {
         navigation.navigate(`${Path.FilterByDate}`, {
-          values,
+          values :{ ...values,
+          viewAllDate : values.checkAll === "0" ? true : false,
+          date :  dayjs(values.date).format(),
+          user : selectedUser === "All" ? null : selectedUser}
         });
       }}
     >
       {({ values, handleSubmit }) => (
         <Flex flex={1} m={3} my={2} alignItems={"center"}>
           <Box flex={1} width={"100%"}>
-            <UserDropDown />
+            <Inputs name={"bullID"} title={"Bull ID"} required={false} />
             <Box my={2}>
               <RadioGroupFormik
                 title={""}
@@ -150,78 +170,71 @@ function DateFilter({ navigation }: DashboardProp) {
   );
 }
 
-function MonthFilter({ navigation }: DashboardProp) {
-  const { UserDropDown } = useUserDropDown({ withBullID: false });
+function MonthFilter({ navigation,selectedUser }: DashboardProp & FilterProp) {
   return (
     <Formik
       initialValues={{
-        bullID: "",
         date: new Date(),
-        checkAll: "0",
-        user: "",
       }}
       onSubmit={(values) => {
         navigation.navigate(`${Path.FilterByMonth}`, {
-          values,
+          values :{ ...values,
+            user : selectedUser === "All" ? null : selectedUser}
         });
       }}
     >
       {({ values, handleSubmit }) => (
         <FilterWrapper handleSubmit={handleSubmit}>
-          <UserDropDown />
           <DatePicker
-                name={"date"}
-                label={"By month"}
-                type={"month"}
-                placeholder={"All Date"}
-              />
+            name={"date"}
+            label={"By month"}
+            type={"month"}
+            placeholder={"All Date"}
+          />
         </FilterWrapper>
       )}
     </Formik>
   );
 }
 
-function YearFilter({ navigation }: DashboardProp) {
-  const { UserDropDown } = useUserDropDown({
-    withBullID: true,
-    withBullIDReq: true,
-  });
+function YearFilter({ navigation, selectedUser }: DashboardProp & FilterProp) {
   return (
     <Formik
       initialValues={{
         bullID: "",
         date: new Date(),
-        user: "",
       }}
       onSubmit={(values) => {
-        console.log("", values);
         navigation.navigate(`${Path.FilterByYear}`, {
-          values,
+          values :{ ...values,
+            user : selectedUser === "All" ? null : selectedUser}
         });
       }}
+      validationSchema={yup.object().shape({
+        bullID: yup.string().required("Required"),
+      })}
     >
       {({ values, handleSubmit }) => (
         <FilterWrapper handleSubmit={handleSubmit}>
-          <UserDropDown />
+          <Inputs name={"bullID"} title={"Bull ID"} required={true} />
           <DatePicker
-                name={"month"}
-                label={"By year"}
-                type={"month"}
-                placeholder={"All Date"}
-              />
-       
+            name={"month"}
+            label={"By year"}
+            type={"year"}
+            placeholder={"All Date"}
+          />
         </FilterWrapper>
       )}
     </Formik>
   );
 }
 
-const useUserDropDown = ({
-  withBullID,
-  withBullIDReq = false,
+const UserDropDown = ({
+  value,
+  onChange,
 }: {
-  withBullID: boolean;
-  withBullIDReq?: boolean;
+  value: string;
+  onChange: (e: any) => void;
 }) => {
   const [user, setUser] = useState([]);
   useEffect(() => {
@@ -229,21 +242,16 @@ const useUserDropDown = ({
       setUser(e.data);
     });
   }, []);
-  const UserDropDown = () => (
-    <>
-      <SelectFormFormik
-        options={[{ value: "", label: "All" }, ...user]}
-        title="By User"
-        placeholder={"Select User"}
-        name={"user"}
-      />
-      {withBullID && (
-        <Inputs name={"bullID"} title={"Bull ID"} required={withBullIDReq} />
-      )}
-    </>
-  );
 
-  return { UserDropDown };
+  return (
+    <SelectForm
+      options={[{ value: "All", label: "All user" }, ...user]}
+      title=""
+      placeholder={"Select User"}
+      onChage={onChange}
+      value={value}
+    />
+  );
 };
 
 const FilterWrapper = ({
@@ -265,3 +273,5 @@ const FilterWrapper = ({
     </Flex>
   );
 };
+
+

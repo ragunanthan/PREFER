@@ -7,6 +7,7 @@ import {
   Flex,
   Text,
   ChevronDownIcon,
+  ChevronUpIcon,
 } from "native-base";
 import React from "react";
 type SelectPropType =  {
@@ -32,11 +33,12 @@ export default function SelectForm({
 
   return (
     <FormControl isInvalid={touched && error ? true : false}>
-      <FormControl.Label>{title}</FormControl.Label>
+      {title && <FormControl.Label>{title}</FormControl.Label>}
 
       <Select
         variant={"outline"}
-        dropdownIcon={<ChevronDownIcon size={"sm"} />}
+        dropdownIcon={<ChevronDownIcon style={{ marginRight : 7}}  />}
+        dropdownOpenIcon={<ChevronUpIcon style={{ marginRight : 7}}  />}
         accessibilityLabel={placeholder}
         placeholder={placeholder}
         _selectedItem={{

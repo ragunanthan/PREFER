@@ -1,5 +1,5 @@
 // @flow Copyright ©2021 ICS. All Rights Reserved.
-import { FormControl, WarningOutlineIcon } from "native-base";
+import { FormControl, HStack, Modal, WarningOutlineIcon } from "native-base";
 import React, { useCallback, useState } from "react";
 import { Image, Text, View } from "native-base";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -9,6 +9,7 @@ import { TouchableOpacity } from "react-native";
 import { images } from "../../Assests";
 import { useField } from "formik";
 import MonthPickers from "react-native-month-year-picker";
+import { Picker } from "@react-native-picker/picker";
 
 export const applyDateFormate = (date: Date, format: string) => {
   return dayjs(date).format(format);
@@ -26,7 +27,7 @@ interface DatePickerPropsType {
   maxDate?: Date | undefined;
   dateFormat?: string;
   error?: string;
-  type?: "date" | "datetime" | "time" | "month";
+  type?: "date" | "datetime" | "time" | "month" | "year";
   required?: boolean | undefined;
   testID?: string | undefined;
   dateLabelStyle?: object;
@@ -85,7 +86,7 @@ export const DatePicker = (props: DatePickerPropsType) => {
           >
             <Text style={[dateLabelStyle]}>
               {field.value
-                ? applyDateFormate(field.value, type === "month" ? "MMMM YYYY" : "DD MMM YYYY")
+                ? applyDateFormate(field.value, findFormatByType(type))
                 : placeholder}
             </Text>
 
@@ -105,6 +106,14 @@ export const DatePicker = (props: DatePickerPropsType) => {
               locale="en"
             />
           ) : null
+        ) : type === "year" ? (
+          <YearPicker
+            isVisible={visiblePicker}
+            startYear={"2023"}
+            endYear={"2023"}
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
+          />
         ) : (
           <DateTimePickerModal
             isVisible={visiblePicker}
@@ -147,3 +156,70 @@ export const styles = ScaledSheet.create({
     borderColor: "red",
   },
 });
+
+export const YearPicker = ({
+  startYear,
+  endYear,
+  onConfirm,
+  isVisible,
+  onCancel,
+}: {
+  startYear: string;
+  endYear: string;
+  onConfirm: (e: any) => void;
+  isVisible: boolean;
+  onCancel: () => void;
+}) => {
+  const [selectedYear, setSelectedYear] = useState(startYear);
+
+  const years = [];
+  for (let i: any = startYear; i <= endYear; i++) {
+    years.push(i.toString());
+  }
+
+  const handleYearChange = (year: any) => {
+    setSelectedYear(year);
+  };
+
+  return (
+    <Modal isOpen={isVisible}>
+      <Modal.Content maxWidth="350" maxH="212">
+        <Modal.Header>
+          <HStack justifyContent={"space-between"}>
+            <TouchableOpacity onPress={onCancel}>
+              <Text>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                onConfirm(dayjs().year(parseInt(selectedYear)).startOf("day"))
+              }
+            >
+              <Text>Save</Text>
+            </TouchableOpacity>
+          </HStack>
+        </Modal.Header>
+        <Modal.Body>
+          <Picker selectedValue={selectedYear} onValueChange={handleYearChange}>
+            {years.map((year) => (
+              <Picker.Item key={year} label={year} value={year} />
+            ))}
+          </Picker>
+        </Modal.Body>
+      </Modal.Content>
+    </Modal>
+  );
+};
+
+function findFormatByType(
+  type: "date" | "datetime" | "time" | "month" | "year"
+) {
+  switch (type) {
+    case "date":
+    default:
+      return "DD MMM YYYY";
+    case "year":
+      return "YYYY";
+    case "month":
+      return "MMMM YYYY";
+  }
+}
