@@ -51,8 +51,8 @@ export default function FilterByYear(props: any) {
   return (
    <VStack space={3} flex={1}>
     <HStack justifyContent={"space-between"} pt={0} p={3}>
-    <Heading size={"md"}>Year : {dayjs(values.date).format("YYYY") ?? 0}</Heading>
-    <Heading size={"md"}>Bull : {values.bullID ?? 0}</Heading>
+    <Heading fontWeight={"medium"} size={"md"}>Year : {dayjs(values.date).format("YYYY") ?? 0}</Heading>
+    <Heading fontWeight={"medium"}  size={"md"}>Bull : {values.bullID ?? 0}</Heading>
     </HStack>
      <ScrollView px={2}>
       <VStack space={4}>
@@ -79,7 +79,7 @@ function CardContainer({
   return (
     <VStack space={"2"} borderRadius={4} shadow="4" bg={"white"} p={3}>
       <HStack justifyContent={"space-between"}>
-        <Text fontSize={"md"} fontWeight={"bold"}>
+        <Text fontSize={"md"} fontWeight={"normal"}>
           {dayjs()
             .month(item.month - 1)
             .format("MMMM")}

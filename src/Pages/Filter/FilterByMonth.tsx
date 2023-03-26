@@ -1,14 +1,17 @@
 import dayjs from "dayjs";
-import { Box, Flex, HStack, Text, View } from "native-base";
+import {
+  Box,
+  Flex,
+  HStack,
+  Text,
+  View,
+  VStack,
+  FlatList,
+  Heading,
+} from "native-base";
 import React, { useEffect, useMemo, useState } from "react";
 import { RefreshControl } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
-import { FetchByDate, FetchByMonth } from "../../API/dashboard";
-import TableHeader from "../../Components/Table/TableHeader";
-import {
-  borderBottomTableStyle,
-  borderTableStyle,
-} from "../../Components/Table/TableStyle";
+import {FetchByMonth } from "../../API/dashboard";
 import { logger } from "../../utils/logger";
 
 export default function FilterByMonth(props: any) {
@@ -52,30 +55,15 @@ export default function FilterByMonth(props: any) {
   }
 
   const onRefersh = () => {};
-  return (
-    <>
-      <TableHeader
-        Header={[
-          { label: "S.no", space: 0.5, style: { alignItems: "center" } },
+  const Separator = () => <View m={2} />;
 
-          { label: "Bull ID", space: 0.6, style: { alignItems: "center" } },
-          {
-            label: "No of Ejaculates collected",
-            space: 0.6,
-            style: { alignItems: "center" },
-          },
-          {
-            label: "No of Ejaculates accepted",
-            space: 0.6,
-            style: { alignItems: "center" },
-          },
-          {
-            label: "Ejaculates accepted (%)",
-            space: 0.8,
-            style: { alignItems: "center" },
-          },
-        ]}
-      />
+  return (
+    <VStack flex={1}>
+      <HStack justifyContent={"space-between"} pt={0} p={3}>
+        <Heading size={"md"} fontWeight={"medium"}>
+          {dayjs(values.date).format("MMM")} {dayjs(values.date).format("YYYY") ?? 0}
+        </Heading>
+      </HStack>
       <FlatList
         data={state}
         ListEmptyComponent={state.length ? null : <Text>No Data found</Text>}
@@ -86,28 +74,18 @@ export default function FilterByMonth(props: any) {
         onEndReached={() => {
           if (!fetching) setPage((pre) => pre + 1);
         }}
+        ItemSeparatorComponent={Separator}
         renderItem={({ item, index }: { item: any; index: any }) => {
-          let lastItem = state.length - 1 === index;
-          console.log(item);
-
-          return (
-            <Container
-              item={item}
-              key={index}
-              index={index}
-              lastItem={lastItem}
-            />
-          );
+          return <Container item={item} key={index} index={index} />;
         }}
       />
-    </>
+    </VStack>
   );
 }
 
 function Container({
   item,
   index,
-  lastItem,
 }: {
   item: {
     bullID: string;
@@ -117,35 +95,32 @@ function Container({
     ejac_percent: string;
   };
   index: number;
-  lastItem: boolean;
 }) {
   return (
-    <View key={index} pb={lastItem ? "32" : 0}>
-      <HStack
-        key={index}
-        // {...borderBottomTableStyle(data.length - 1 === index)}
-      >
-        <Flex flex={0.5} alignItems={"center"} {...borderTableStyle}>
-          <Text>{index + 1}</Text>
-        </Flex>
-        <Flex flex={0.6} alignItems={"center"} {...borderTableStyle}>
-          <Text>{item.bullID}</Text>
-        </Flex>
-        <Flex flex={0.6} alignItems={"center"} {...borderTableStyle}>
-          <Text>{item.ejac_collected}</Text>
-        </Flex>
-        <Flex flex={0.6} alignItems={"center"} {...borderTableStyle}>
-          <Text>{item.ejac_accepted}</Text>
-        </Flex>
-        <Flex flex={0.6} alignItems={"center"} {...borderTableStyle}>
-          <Text>{item.ejac_percent}</Text>
-        </Flex>
-        {/* <Flex flex={0.8} alignItems={"center"} {...borderTableStyle}>
-          <Text color={item.isAccept ? "green.600" : "red.600"}>
-            {item.isAccept ? "Accept" : "Reject"}
-          </Text>
-        </Flex> */}
+    <VStack space={"2"} borderRadius={4} shadow="4" bg={"white"} p={3} mx={3}>
+      <HStack justifyContent={"space-between"}>
+        <Text fontSize={"md"} fontWeight={"normal"}>
+          {index + 1}.
+        </Text>
+        <Text fontSize={"md"} fontWeight={"semibold"}>
+          {" "}
+          Bull : {item.bullID}
+        </Text>
       </HStack>
-    </View>
+      <VStack pl={3} space={1}>
+        <HStack>
+          <Text flex={0.6}>No of ejaculates : </Text>
+          <Text>{item.ejac_collected}</Text>
+        </HStack>
+        <HStack>
+          <Text flex={0.6}>Accepted ejaculates :</Text>
+          <Text>{item.ejac_accepted}</Text>
+        </HStack>
+        <HStack>
+          <Text flex={0.6}>Overall percentage :</Text>
+          <Text>{item.ejac_percent}%</Text>
+        </HStack>
+      </VStack>
+    </VStack>
   );
 }

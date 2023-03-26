@@ -3,25 +3,27 @@ import { Dimensions } from "react-native";
 import { images } from "../Assests";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDeviceOrientation } from "../Components/useDeviceOrientation";
+import { useAppContext } from "../provider/AppContext";
 
-const navgationArr = [
-  {
-    icon: images.calculator,
-    title: "Calculator",
-    navigation: "InputCalculator",
-  },
-  {
-    icon: images.form,
-    title: "Predict",
-    navigation: "Predict",
-  },
-  {
-    icon: images.list,
-    title: "View",
-    navigation: "Dashboard",
-  },
-];
 export function Home(props: any) {
+  const { userState } = useAppContext();
+  const navgationArr = [
+    {
+      icon: images.calculator,
+      title: "Calculator",
+      navigation: "InputCalculator",
+    },
+    {
+      icon: images.form,
+      title: "Predict",
+      navigation:  userState?.userId ? "Predict" : "Login",
+    },
+    {
+      icon: images.list,
+      title: "View",
+      navigation:  userState?.userId ? "Dashboard" : "Login",
+    },
+  ];
   return (
     <Flex
       style={{ flex: 1, alignItems: "center", justifyContent: "center" }}

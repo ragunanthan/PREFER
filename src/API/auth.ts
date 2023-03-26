@@ -7,9 +7,9 @@ type loginType = {
   userName?: string;
 };
 export async function login(body: loginType) {
-    return fetcher.post(ENDPOINTS.LOGIN, JSON.stringify(body));
+    return await fetcher.post(ENDPOINTS.LOGIN, JSON.stringify(body));
 }
 
 export async function signup(body: loginType) {
-    return fetcher.post(ENDPOINTS.SIGNUP, JSON.stringify(body));
+    return await fetcher.post(ENDPOINTS.SIGNUP, JSON.stringify(body));
 }

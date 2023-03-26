@@ -9,12 +9,13 @@ type AppContexttype = {
     refreshToken: string;
     email: string;
     userId: number;
+    name : string;
   };
   setUserState: React.Dispatch<React.SetStateAction<null>>;
   showLogin : boolean;
   setShowLogin :  React.Dispatch<React.SetStateAction<boolean>>;
 };
-const AppContext = React.createContext<AppContexttype>({
+export const AppContext = React.createContext<AppContexttype>({
   userState: null,
   setUserState: () => {},
   showLogin: false,

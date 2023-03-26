@@ -16,101 +16,10 @@ import React, { useState } from "react";
 import { Inputs } from "../Components/Form/InputForm";
 import * as yup from "yup";
 import { login, signup } from "../API/auth";
-import { logger } from "../utils/logger";
 import { setSecureData } from "../keychain/secureStorage";
 import { useAppContext } from "../provider/AppContext";
 import { fetcher } from "../API/Fetcher";
 import { ToastAlert } from "../Components/Toast";
-
-export const Login = (props: any) => {
-  const { setUserState, showLogin, setShowLogin } = useAppContext();
-  if (!showLogin) return null;
-  return (
-    <>
-      <Formik
-        initialValues={{
-          email: "",
-          password: "",
-          // ...(values ?? {}),
-        }}
-        enableReinitialize
-        onSubmit={async (values: any) => {
-          login(values)
-            .then((e) => {
-              if (!e.data.error) {
-                let data: any = {
-                  accessToken: e.data.accessToken,
-                  refreshToken: e.data.refreshToken,
-                  email: values.email,
-                  userId: e.data.userId,
-                  ...e.data
-                };
-                fetcher.defaults.headers[
-                  "authorization"
-                ] = `Bearer ${e.data.accessToken}`;
-                setSecureData("userData", data);
-                setUserState(data);
-                props.navigation.navigate("Home");
-              }
-            })
-            .catch((e) => {
-              logger.error(e);
-            });
-        }}
-        validationSchema={yup.object().shape({
-          email: yup.string().email().required("Email"),
-          password: yup.string().required("Password"),
-        })}
-      >
-        {({ handleChange, handleBlur, handleSubmit, values }) => (
-          <Modal isOpen={showLogin} onClose={() => setShowLogin(false)}>
-            <Modal.Content maxWidth="400px">
-              <Modal.CloseButton />
-              <Modal.Header>
-                <Heading>Please Login</Heading>
-              </Modal.Header>
-              <Modal.Body>
-                <Box w="100%" p="2">
-                  <VStack>
-                    <Inputs  name={"email"} title={"Email"} />
-                    <Inputs
-                      
-                      type="password"
-                      name={"password"}
-                      title={"Password"}
-                    />
-                  </VStack>
-                </Box>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button.Group space={2}>
-                  <Button
-                    variant="ghost"
-                    colorScheme="blueGray"
-                    onPress={() => {
-                      setShowLogin(false);
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    colorScheme="indigo"
-                    onPress={() => {
-                      handleSubmit();
-                      setShowLogin(false);
-                    }}
-                  >
-                    Login
-                  </Button>
-                </Button.Group>
-              </Modal.Footer>
-            </Modal.Content>
-          </Modal>
-        )}
-      </Formik>
-    </>
-  );
-};
 
 
 export default function Logins(props: any) {
@@ -129,12 +38,7 @@ export default function Logins(props: any) {
         login(values)
           .then((e) => {
             if (!e.data.error) {
-              let data: any = {
-                accessToken: e.data.accessToken,
-                refreshToken: e.data.refreshToken,
-                email: values.email,
-                userId: e.data.userId,
-              };
+              let data: any = e.data;
               fetcher.defaults.headers["authorization"] =  `Bearer ${e.data.accessToken}`;
               setSecureData("userData", data);
               setUserState(data);
@@ -145,18 +49,19 @@ export default function Logins(props: any) {
                   return (
                     <ToastAlert
                       id={id}
-                      title={"Successfully  loggedIn"}
+                      title={"Successfully  login"}
                       status={"success"}
                       variant="solid"
                     />
                   );
                 },
                 variant: "left-accent",
+                duration : 500
               });
             }
           })
           .catch((e) => {
-            logger.log(e);
+            console.log(e.response);
             
             toast.show({
               id: "loginerror",
@@ -164,7 +69,7 @@ export default function Logins(props: any) {
                 return (
                   <ToastAlert
                     id={id}
-                    title={JSON.stringify(e)}
+                    title={e.response.data.message}
                     status={"error"}
                     variant="solid"
                   />
@@ -175,8 +80,8 @@ export default function Logins(props: any) {
           });
       }}
       validationSchema={yup.object().shape({
-        email: yup.string().email().required("Email"),
-        password: yup.string().required("Password"),
+        email: yup.string().required("Required"),
+        password: yup.string().required("Required"),
       })}
     >
       {({ handleChange, handleBlur, handleSubmit, values }) => (
@@ -204,7 +109,7 @@ export default function Logins(props: any) {
               Login up to continue!
             </Heading>
             <VStack space={3} mt="5">
-              <Inputs  name={"email"} title={"Email"} />
+              <Inputs  name={"email"} title={"Username"} />
               <Inputs
                 
                 type="password"

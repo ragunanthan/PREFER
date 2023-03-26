@@ -19,7 +19,7 @@ import { Header, CommonHeader } from "./Components/Header";
 import { Predict } from "./Pages/Predict";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Login, { Signup } from "./Pages/Login";
-import AppContextProvier from "./provider/AppContext";
+import AppContextProvier, { AppContext } from "./provider/AppContext";
 import Dashboard from "./Pages/Dashboard";
 import { FilterByDate, FilterByMonth, FilterByYear } from "./Pages/Filter";
 import { Path } from "./utils/Const";
@@ -81,106 +81,113 @@ function App() {
     <SafeAreaProvider>
       <AppContextProvier>
         <StatusBar barStyle="dark-content" backgroundColor="white" />
-        <NativeBaseProvider theme={theme}>
-          <NavigationContainer>
-            <Drawer.Navigator
-              initialRouteName="Home"
-              drawerContent={(props) => <Menu {...props} />}
-            >
-              <Drawer.Group
-                screenOptions={({ navigation }) => ({
-                  header: Header,
-                })}
-              >
-                <Drawer.Screen name="Home" component={Home} />
-              </Drawer.Group>
-              <Drawer.Group
-                screenOptions={({ navigation, route }) => ({
-                  header: CommonHeader,
-                  sceneContainerStyle: {
-                    backgroundColor: "#eeeeee",
-                    flex :1,
-                  },
-                  
-                })}
-              >
-                <Drawer.Screen
-                  name="Login"
-                  initialParams={{ title: "Login" }}
-                  component={Login}
-                />
-                <Drawer.Screen
-                  name="Dashboard"
-                  initialParams={{ title: "Dashboard" }}
-                  component={Dashboard}
-                />
-                <Drawer.Screen
-                  name={Path.FilterByDate}
-                  initialParams={{ title: "Filter By Date" }}
-                  component={FilterByDate}
-                />
-                <Drawer.Screen
-                  name={Path.FilterByMonth}
-                  initialParams={{ title: "Filter By Month" }}
-                  component={FilterByMonth}
-                />
-                <Drawer.Screen
-                  name={Path.FilterByYear}
-                  initialParams={{ title: "Filter By Year" }}
-                  component={FilterByYear}
-                />
-                <Drawer.Screen
-                  name="Signup"
-                  initialParams={{ title: "Signup" }}
-                  component={Signup}
-                />
-                <Drawer.Screen
-                  name="SPO"
-                  initialParams={{ title: "SPO" }}
-                  component={SPO}
-                />
-                <Drawer.Screen
-                  name="InputCalculator"
-                  initialParams={{ title: "Input Calculator" }}
-                  component={InputCalculator}
-                />
-                <Drawer.Screen
-                  name="Predict"
-                  initialParams={{ title: "Predict" }}
-                  component={Predict}
-                />
-                <Drawer.Screen
-                  name="ICARNIANP"
-                  initialParams={{ title: "ICAR - NIANP" }}
-                  component={ICARNIANP}
-                />
-                <Drawer.Screen
-                  name="ICARNFP"
-                  initialParams={{ title: "ICAR - NFP" }}
-                  component={ICARNFP}
-                />
+        <AppContext.Consumer>
+          {({ userState }) => (
+            <NativeBaseProvider theme={theme}>
+              <NavigationContainer>
+                <Drawer.Navigator
+                  initialRouteName="Home"
+                  drawerContent={(props) => <Menu {...props} />}
+                >
+                  <Drawer.Group
+                    screenOptions={({ navigation }) => ({
+                      header: Header,
+                    })}
+                  >
+                    <Drawer.Screen name="Home" component={Home} />
+                  </Drawer.Group>
+                  <Drawer.Group
+                    screenOptions={({ navigation, route }) => ({
+                      header: CommonHeader,
+                      sceneContainerStyle: {
+                        backgroundColor: "#eeeeee",
+                        flex: 1,
+                      },
+                    })}
+                  >
+                    <Drawer.Screen
+                      name="Login"
+                      initialParams={{ title: "Login" }}
+                      component={Login}
+                    />
+                    {userState?.userId && (
+                      <>
+                        <Drawer.Screen
+                          name="Dashboard"
+                          initialParams={{ title: "Dashboard" }}
+                          component={Dashboard}
+                        />
+                        <Drawer.Screen
+                          name={Path.FilterByDate}
+                          initialParams={{ title: "Filter By Date" }}
+                          component={FilterByDate}
+                        />
+                        <Drawer.Screen
+                          name={Path.FilterByMonth}
+                          initialParams={{ title: "Filter By Month" }}
+                          component={FilterByMonth}
+                        />
+                        <Drawer.Screen
+                          name={Path.FilterByYear}
+                          initialParams={{ title: "Filter By Year" }}
+                          component={FilterByYear}
+                        />
+                      </>
+                    )}
 
-                <Drawer.Screen
-                  name="PREFERApp"
-                  initialParams={{ title: "Prefer" }}
-                  component={Prefer}
-                />
-                <Drawer.Screen
-                  name="Team"
-                  initialParams={{ title: "Team" }}
-                  component={Team}
-                />
+                    <Drawer.Screen
+                      name="Signup"
+                      initialParams={{ title: "Signup" }}
+                      component={Signup}
+                    />
+                    <Drawer.Screen
+                      name="SPO"
+                      initialParams={{ title: "SPO" }}
+                      component={SPO}
+                    />
+                    <Drawer.Screen
+                      name="InputCalculator"
+                      initialParams={{ title: "Input Calculator" }}
+                      component={InputCalculator}
+                    />
+                    <Drawer.Screen
+                      name="Predict"
+                      initialParams={{ title: "Predict" }}
+                      component={Predict}
+                    />
+                    <Drawer.Screen
+                      name="ICARNIANP"
+                      initialParams={{ title: "ICAR - NIANP" }}
+                      component={ICARNIANP}
+                    />
+                    <Drawer.Screen
+                      name="ICARNFP"
+                      initialParams={{ title: "ICAR - NFP" }}
+                      component={ICARNFP}
+                    />
 
+                    <Drawer.Screen
+                      name="PREFERApp"
+                      initialParams={{ title: "Prefer" }}
+                      component={Prefer}
+                    />
+                    <Drawer.Screen
+                      name="Team"
+                      initialParams={{ title: "Team" }}
+                      component={Team}
+                    />
 
-                <Drawer.Screen
-                  name="Contact"
-                  initialParams={{ title: "Contact" }}
-                  component={Contact}
-                />
-              </Drawer.Group>
-            </Drawer.Navigator>
-          </NavigationContainer>
-        </NativeBaseProvider>
+                    <Drawer.Screen
+                      name="Contact"
+                      initialParams={{ title: "Contact" }}
+                      component={Contact}
+                    />
+                  </Drawer.Group>
+                </Drawer.Navigator>
+              </NavigationContainer>
+            </NativeBaseProvider>
+          )}
+        </AppContext.Consumer>
       </AppContextProvier>
     </SafeAreaProvider>
   );

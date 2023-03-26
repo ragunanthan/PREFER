@@ -1,12 +1,13 @@
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { DrawerActions } from '@react-navigation/native';
-import { Avatar, Box, Button, Flex, Text, VStack } from "native-base";
+import { DrawerActions } from "@react-navigation/native";
+import { Avatar, Box, Button, Flex, HStack, Text, VStack } from "native-base";
 import { ENDPOINTS, fetcher } from "../API/Fetcher";
 import { removeAllSecureData } from "../keychain/secureStorage";
 import { useAppContext } from "../provider/AppContext";
 import { logger } from "../utils/logger";
 
 export function Menu(props: any) {
+  const { userState } = useAppContext();
   return (
     <DrawerContentScrollView {...props} flex={1}>
       <Flex height={"150"} bg="black">
@@ -39,11 +40,11 @@ export function Menu(props: any) {
           />
           <DrawerItem
             label={"Predict"}
-            onPress={() => props.navigation.navigate("Predict")}
+            onPress={() => userState?.userId ? props.navigation.navigate("Predict") : props.navigation.navigate("Login")}
           />
           <DrawerItem
             label={"View Data"}
-            onPress={() => props.navigation.navigate("Dashboard")}
+            onPress={() => userState?.userId ?  props.navigation.navigate("Dashboard") : props.navigation.navigate("Login")}
           />
         </Box>
         <Box
@@ -97,6 +98,7 @@ function UserInfo({ props }: any) {
       if (data.data) {
         await removeAllSecureData();
         setUserState(null);
+        props.navigation.navigate("Login")
       }
     } catch (Err: any) {
       logger.error(Err);
@@ -104,32 +106,36 @@ function UserInfo({ props }: any) {
   };
   if (userState?.userId)
     return (
-      <VStack space={"2"} flexDir={"column"} alignItems="center" p={3}>
-        {/* <HStack justifyContent={"space-between"}> */}
-          <Avatar bg="green.500" size={"sm"}>
-            AJ
-          </Avatar>
-        {/* </HStack> */}
-        <Text
-          color="white"
-          onPress={() => props.navigation.navigate("Login")}
-          fontSize={"sm"}
+      <VStack justifyContent={"center"} flex={1} px={4} space={3} >
+        <HStack
+          space={5}
+          alignItems={"center"}
         >
-          {userState.email}
-        </Text>
-          <Button width="30%" p={2} onPress={logout}>
-            Logout
-          </Button>
+          <Avatar bg="green.500" size={"md"}>
+            {userState.name.toUpperCase().slice(0, 2)}
+          </Avatar>
+          <VStack>
+            <Text color="white" fontSize={"md"} fontWeight={"thin"}>
+              Welcome
+            </Text>
+            <Text color="white" flex={1} fontSize={"md"} noOfLines={1}>
+              {userState.name}
+            </Text>
+          </VStack>
+        </HStack>
+
+        <HStack justifyContent={"flex-end"}>
+        <Button  px={3} py="1.5" bg={"red.900"} onPress={logout}>
+          Logout
+        </Button>
+        </HStack>
       </VStack>
     );
   return (
     <Flex alignItems="center" justifyContent={"center"} flex={1}>
       <Text
         color="white"
-        onPress={() =>{
-          props.navigation.dispatch(DrawerActions.closeDrawer());
-          setShowLogin(true);
-        }}
+        onPress={() => props.navigation.navigate("Login")}
         fontWeight={"600"}
         fontSize={"xl"}
       >
