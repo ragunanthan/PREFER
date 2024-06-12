@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getSecureData } from "../keychain/secureStorage";
-import { logger } from " ../utils/logger";
+import { logger } from "../utils/logger";
 
 export const fetcher = axios.create({
   baseURL: "http://localhost:3000/api",
