@@ -3,14 +3,14 @@ import { Box, Text, View } from "native-base";
 
 export function Footer() {
   return (
-    <View>
-      <Text color="white" fontSize={"2xs"}>Developed under</Text>
+    <View mb={5}>
+      <Text color="black" fontSize={"2xs"}>Developed under</Text>
       <Box pl="3">
-        <Text color="white">ICAR - National Fellow project</Text>
-        <Text color="white" fontFamily={"Poppins-Regular"} >
+        <Text color="black">ICAR - National Fellow project</Text>
+        <Text color="black" fontFamily={"Poppins-Regular"} >
           ICAR - National Institute of Animal Nutrition and Physiology
         </Text>
-        <Text color="white">Adugodi, Bangalore - 560 030</Text>
+        <Text color="black">Adugodi, Bangalore - 560 030</Text>
       </Box>
     </View>
   );

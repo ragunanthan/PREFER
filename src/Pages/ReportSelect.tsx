@@ -8,6 +8,7 @@ import {
   Text,
   Button,
   HStack,
+  KeyboardAvoidingView,
 } from "native-base";
 import React, { useEffect, useState } from "react";
 import { style } from "../Components/Container";
@@ -22,6 +23,7 @@ import { Path } from "../utils/Const";
 import { useAppContext } from "../provider/AppContext";
 import * as yup from "yup";
 import dayjs from "dayjs";
+import { Platform } from "react-native";
 
 enum TYPES {
   DATE = 1,
@@ -32,29 +34,33 @@ const ReportSelect = ({ navigation }: DashboardProp) => {
   const { userState } = useAppContext();
   const [selectedReport, setSelectedReport] = useState(0);
   let admin = userState?.isAdmin ?? false;
-  const [selectedUser, setSelectedUser] = useState(admin ? "All" : `${userState?.userId}` ?? "");
+  const [selectedUser, setSelectedUser] = useState(admin ? "All" : `${userState?.email}` ?? "");
   return (
+    <KeyboardAvoidingView h={{
+      base: "full",
+      lg: "auto"
+    }}  behavior={Platform.OS === "ios" ? "padding" : "height"}>
     <ScrollView
       {...style}
       width={"100%"}
       p={5}
       borderRadius={0}
       contentContainerStyle={{
-        flexGrow: 1,
+        flex: 1
       }}
     >
       <HStack alignItems={"center"} justifyContent={"space-between"}>
         <Text fontWeight={"normal"} fontSize={"xl"}>
           Reports
         </Text>
-        {admin && <Box flex={0.5}>
+        {/* {admin && <Box flex={0.5}>
           <UserDropDown
             value={selectedUser}
             onChange={(e) => {
               setSelectedUser(e);
             }}
           />
-        </Box>}
+        </Box>} */}
       </HStack>
       <Flex flex={1} mt={3} height={"100%"}>
         {[
@@ -113,6 +119,7 @@ const ReportSelect = ({ navigation }: DashboardProp) => {
         })}
       </Flex>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

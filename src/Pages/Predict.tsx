@@ -3,12 +3,13 @@ import {
   Box,
   Button,
   Flex,
+  KeyboardAvoidingView,
   ScrollView,
   Text,
   useToast,
   VStack,
 } from "native-base";
-import { Formik } from "formik";
+import { Formik, FormikBag } from "formik";
 import * as yup from "yup";
 import { ENDPOINTS, PostMethod } from "../API/Fetcher";
 import { logger } from "../utils/logger";
@@ -17,13 +18,15 @@ import { RadioGroupFormik } from "../Components/Form/RadioGroup";
 import { useAppContext } from "../provider/AppContext";
 import { style } from "../Components/Container";
 import { ToastAlert } from "../Components/Toast";
+import { Platform } from "react-native";
+import { TabBar } from "./Home";
+import { images } from "../Assests";
 
 export function Predict(props: any) {
-  const [calculatedValue, setCalculatedValue] = useState<number | null>(null);
+  const [calculatedValue, setCalculatedValue] = useState<any>(undefined);
   const toast = useToast();
-  const { userState } = useAppContext();
 
-  function savePredict(values: any) {
+  function savePredict(values: any, formikBag: any) {
     let cal = values.h0 - values.h1 + (values.h0 - values.h4);
     setCalculatedValue(cal);
     PostMethod(ENDPOINTS.PREFER, {
@@ -33,7 +36,6 @@ export function Predict(props: any) {
       h1: parseInt(values.h1),
       h4: parseInt(values.h4),
       calculation: cal,
-      authorId: userState?.userId,
     })
       .then((r) => {
         logger.info(r.data);
@@ -53,18 +55,26 @@ export function Predict(props: any) {
             variant: "left-accent",
           });
         }
+        setTimeout(() => {
+          setCalculatedValue(undefined);
+        formikBag.resetForm();
+        }, 5000);
       })
       .catch((e) => {
         logger.error(e);
       });
   }
   return (
+    <KeyboardAvoidingView h={{
+      base: "full",
+      lg: "auto"
+    }} width={"100%"} behavior={Platform.OS === "ios" ? "padding" : "height"}>
     <ScrollView>
       <Box alignItems={"center"} pb={2}>
         <Formik
           initialValues={{
             bullID: "",
-            ejakulationNo: "1",
+            ejakulationNo: "",
             h0: "",
             h1: "",
             h4: "",
@@ -126,13 +136,14 @@ export function Predict(props: any) {
               >
                 Process
               </Button>
-              <Text color={calculatedValue ?? 0 >= 18? "red.600" : "green.600"} py={3} fontSize={"xl"} >
-                {calculatedValue ? "Result : " +  calculatedValue : "-"}
+              <Text color={calculatedValue ?? 0 > 18? "red.600" : "green.600"} py={3} fontSize={"xl"} >
+                {calculatedValue ? `Result : ${(calculatedValue ?? 0) > 18 ? 'false' : 'true'}` : "-"}
               </Text>
             </VStack>
           )}
         </Formik>
       </Box>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

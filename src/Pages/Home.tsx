@@ -4,6 +4,7 @@ import { images } from "../Assests";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDeviceOrientation } from "../Components/useDeviceOrientation";
 import { useAppContext } from "../provider/AppContext";
+import { Footer } from "../Components/Footer";
 
 export function Home(props: any) {
   const { userState } = useAppContext();
@@ -16,12 +17,12 @@ export function Home(props: any) {
     {
       icon: images.form,
       title: "Predict",
-      navigation:  userState?.userId ? "Predict" : "Login",
+      navigation: userState?.email ? "Predict" : "Login",
     },
     {
       icon: images.list,
       title: "View",
-      navigation:  userState?.userId ? "Dashboard" : "Login",
+      navigation: userState?.email ? "Dashboard" : "Login",
     },
   ];
   return (
@@ -34,14 +35,15 @@ export function Home(props: any) {
         alt="sma"
         resizeMethod={"auto"}
         resizeMode={"contain"}
+        opacity={.4}
       />
 
-      <TabBar navigation={props.navigation} navgationArr={navgationArr} />
+      <TabBar navigation={props.navigation} navgationArr={navgationArr} showfootercontent={true} />
     </Flex>
   );
 }
 
-export const TabBar = ({ navigation, navgationArr }: any) => {
+export const TabBar = ({ navigation, navgationArr, showfootercontent  = false}: any) => {
   const [maxWidth, setMaxWidth] = useState<string | null>(null);
   const orientation = useDeviceOrientation();
   useEffect(() => {
@@ -52,6 +54,7 @@ export const TabBar = ({ navigation, navgationArr }: any) => {
 
   return (
     <Box position={"absolute"} bottom={10}>
+      {showfootercontent && <Footer />}
       <Flex
         bg={"coolGray.100"}
         borderRadius={10}
@@ -62,7 +65,7 @@ export const TabBar = ({ navigation, navgationArr }: any) => {
         width={maxWidth ?? "0px"}
         flexDirection={"row"}
       >
-        {navgationArr.map((i: any, index : number) => {
+        {navgationArr.map((i: any, index: number) => {
           return (
             <Pressable
               onPress={() => navigation?.navigate(i.navigation)}

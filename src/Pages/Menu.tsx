@@ -8,6 +8,7 @@ import { logger } from "../utils/logger";
 
 export function Menu(props: any) {
   const { userState } = useAppContext();
+  
   return (
     <DrawerContentScrollView {...props} flex={1}>
       <Flex height={"150"} bg="black">
@@ -31,7 +32,7 @@ export function Menu(props: any) {
             onPress={() => props.navigation.navigate("Home")}
           />
           <DrawerItem
-            label={"SPO"}
+            label={"SOP"}
             onPress={() => props.navigation.navigate("SPO")}
           />
           <DrawerItem
@@ -40,11 +41,11 @@ export function Menu(props: any) {
           />
           <DrawerItem
             label={"Predict"}
-            onPress={() => userState?.userId ? props.navigation.navigate("Predict") : props.navigation.navigate("Login")}
+            onPress={() => userState?.email ? props.navigation.navigate("Predict") : props.navigation.navigate("Login")}
           />
           <DrawerItem
             label={"View Data"}
-            onPress={() => userState?.userId ?  props.navigation.navigate("Dashboard") : props.navigation.navigate("Login")}
+            onPress={() => userState?.email ?  props.navigation.navigate("Dashboard") : props.navigation.navigate("Login")}
           />
         </Box>
         <Box
@@ -88,13 +89,8 @@ function UserInfo({ props }: any) {
   const { userState, setUserState, setShowLogin } = useAppContext();
   const logout = async () => {
     try {
-      const data = await fetcher.post(
-        ENDPOINTS.LOGOUT,
-        JSON.stringify({
-          refreshToken: userState?.refreshToken,
-          userId: userState?.userId,
-        })
-      );
+      const data = await fetcher.get(
+        ENDPOINTS.LOGOUT + "/" + userState?.id);
       if (data.data) {
         await removeAllSecureData();
         setUserState(null);
@@ -104,7 +100,7 @@ function UserInfo({ props }: any) {
       logger.error(Err);
     }
   };
-  if (userState?.userId)
+  if (userState?.email)
     return (
       <VStack justifyContent={"center"} flex={1} px={4} space={3} >
         <HStack
@@ -112,14 +108,14 @@ function UserInfo({ props }: any) {
           alignItems={"center"}
         >
           <Avatar bg="green.500" size={"md"}>
-            {userState.name.toUpperCase().slice(0, 2)}
+            {userState.name?.toUpperCase()?.slice(0, 2) ?? "-"}
           </Avatar>
           <VStack>
             <Text color="white" fontSize={"md"} fontWeight={"thin"}>
               Welcome
             </Text>
             <Text color="white" flex={1} fontSize={"md"} noOfLines={1}>
-              {userState.name}
+              {userState?.name ?? "-"}
             </Text>
           </VStack>
         </HStack>

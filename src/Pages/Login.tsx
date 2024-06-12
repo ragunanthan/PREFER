@@ -39,9 +39,9 @@ export default function Logins(props: any) {
           .then((e) => {
             if (!e.data.error) {
               let data: any = e.data;
-              fetcher.defaults.headers["authorization"] =  `Bearer ${e.data.accessToken}`;
+              fetcher.defaults.headers["authorization"] =  `Bearer ${e.data.data.accessToken}`;
               setSecureData("userData", data);
-              setUserState(data);
+              setUserState(data.data);
               props.navigation.navigate("Home");
               toast.show({
                 id: "login",

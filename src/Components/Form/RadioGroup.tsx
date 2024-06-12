@@ -1,6 +1,6 @@
 
 import { useField } from 'formik';
-import { Flex, FormControl, HStack, Radio, VStack } from 'native-base';
+import { Flex, FormControl, HStack, Radio, VStack, WarningOutlineIcon } from 'native-base';
 import React from 'react';
 
 type RadioGroupType = {
@@ -8,7 +8,9 @@ type RadioGroupType = {
   name?: string;
   option: { value: string; label: string }[];
   value?: string;
-  onChange?:(e:string) => void
+  onChange?:(e:string) => void;
+  touched ? : boolean;
+  error? : string
 };
 
 export function RadioGroup({
@@ -16,11 +18,14 @@ export function RadioGroup({
     name,
     option,
     value,
-    onChange
+    onChange,
+    touched,
+    error
   }: RadioGroupType) {
    
   
     return (
+      <FormControl isInvalid={touched && error ? true : false}>
       <Flex flexDirection={"row"} alignItems="flex-start">
        {title && <FormControl.Label flex={2}>{title}</FormControl.Label>}
   
@@ -40,10 +45,15 @@ export function RadioGroup({
           </HStack>
         </Radio.Group>
       </Flex>
+      <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+          {error}
+        </FormControl.ErrorMessage>
+      </FormControl>
     );
   }
 
   export function RadioGroupFormik({name,value , onChange, ...rest}:RadioGroupType) {
-    const [field, , helper] = useField(name ?? "");
-    return <RadioGroup {...rest} value={field.value} onChange={(e) => helper.setValue(`${e}`)} />
+    const [field, {error, touched} , helper] = useField(name ?? "");
+    
+    return <RadioGroup {...rest} error={error}  touched={touched} value={field.value} onChange={(e) => helper.setValue(`${e}`)} />
   }

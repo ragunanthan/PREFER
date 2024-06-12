@@ -8,7 +8,7 @@ type AppContexttype = {
     accessToken: string;
     refreshToken: string;
     email: string;
-    userId: number;
+    id: number;
     name : string;
     isAdmin : boolean;
   };
@@ -43,11 +43,11 @@ export default function AppContextProvier({
 
   async function getUserDataFromStorage() {
     try {
-      let data: any = await getSecureData("userData");
-
-      if (data?.userId && data?.refreshToken) {
+      let {data}: any = await getSecureData("userData");
+      
+      if (data?.id && data?.refreshToken) {
         let accessToken = await fetcher.post(ENDPOINTS.REFERSH_TOKEN, {
-          userId: data?.userId,
+          id: data?.id,
           refreshToken: data?.refreshToken,
         });
         setUserState({
@@ -59,7 +59,7 @@ export default function AppContextProvier({
           accessToken: accessToken.data.accessToken,
         });
         fetcher.defaults.headers["authorization"] =  `Bearer ${accessToken.data.accessToken}`;
-        fetcher.defaults.headers["userId"] =   data?.userId;
+     
       }
     } catch (err: any) {
       logger.error(err);

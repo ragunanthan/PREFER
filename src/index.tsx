@@ -86,6 +86,7 @@ function App() {
             <NativeBaseProvider theme={theme}>
               <NavigationContainer>
                 <Drawer.Navigator
+                detachInactiveScreens={false}
                   initialRouteName="Home"
                   drawerContent={(props) => <Menu {...props} />}
                 >
@@ -99,8 +100,9 @@ function App() {
                   <Drawer.Group
                     screenOptions={({ navigation, route }) => ({
                       header: CommonHeader,
+                      unmountOnBlur:true,
                       sceneContainerStyle: {
-                        backgroundColor: "#eeeeee",
+                        backgroundColor: "#fafafa",
                         flex: 1,
                       },
                     })}
@@ -110,7 +112,7 @@ function App() {
                       initialParams={{ title: "Login" }}
                       component={Login}
                     />
-                    {userState?.userId && (
+                    {userState?.email && (
                       <>
                         <Drawer.Screen
                           name="Dashboard"
@@ -142,7 +144,7 @@ function App() {
                     />
                     <Drawer.Screen
                       name="SPO"
-                      initialParams={{ title: "SPO" }}
+                      initialParams={{ title: "SOP" }}
                       component={SPO}
                     />
                     <Drawer.Screen

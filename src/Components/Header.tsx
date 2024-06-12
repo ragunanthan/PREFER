@@ -51,7 +51,7 @@ export function Header({ navigation }: any) {
               PREFER
             </Heading>
             <Text color="black" fontWeight="600" fontSize="md">
-              Predicting Semen Quality Simplified
+              Predicting Semen Quality 
             </Text>
           </Box>
         </HStack>
