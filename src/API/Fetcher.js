@@ -3,7 +3,7 @@ import { getSecureData } from "../keychain/secureStorage";
 import { logger } from "../utils/logger";
 
 export const fetcher = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: "https://prefer.ragunanthan.in/api",
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
