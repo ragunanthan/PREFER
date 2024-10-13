@@ -226,6 +226,7 @@ android {
             keyPassword 'android'
         }
     }
+    namespace 'com.prefer'
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
